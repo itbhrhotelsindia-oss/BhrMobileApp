@@ -15,6 +15,10 @@ import 'features/our_hotels/bloc/our_hotels_bloc.dart';
 import 'features/our_hotels/bloc/our_hotels_event.dart';
 import 'features/our_hotels/repository/our_hotels_repository.dart';
 
+import 'features/weddings/bloc/weddings_bloc.dart';
+import 'features/weddings/bloc/weddings_event.dart';
+import 'features/weddings/repository/weddings_repository.dart';
+
 import 'app/app_shell.dart';
 import 'core/theme/app_theme.dart';
 
@@ -27,6 +31,7 @@ void main() {
   final homeRepository = HomeRepository(apiClient);
   final headerRepository = HeaderRepository(apiClient);
   final ourHotelsRepository = OurHotelsRepository(apiClient);
+  final weddingsRepository = WeddingsRepository(apiClient);
 
   runApp(
       MultiRepositoryProvider(
@@ -53,6 +58,13 @@ void main() {
               create: (_) => OurHotelsBloc(
                 ourHotelsRepository,
               )..add(LoadOurHotels()),
+            ),
+
+            /// Weddings
+            BlocProvider<WeddingsBloc>(
+              create: (_) => WeddingsBloc(
+                weddingsRepository,
+              )..add(LoadWeddings()),
             ),
           ],
           child: const MyApp(),

@@ -5,6 +5,8 @@ import '../bloc/our_hotels_bloc.dart';
 import '../bloc/our_hotels_event.dart';
 import '../bloc/our_hotels_state.dart';
 import '../widgets/hotels_grid.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../app/app_shell.dart';
 
 class OurHotelsPage extends StatelessWidget {
   const OurHotelsPage({super.key});
@@ -15,6 +17,35 @@ class OurHotelsPage extends StatelessWidget {
       create: (ctx) =>
       ctx.read<OurHotelsBloc>()..add(LoadOurHotels()),
       child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back_ios_new,
+              color: AppColors.darkGold1,
+              size: 20,
+            ),
+            onPressed: () {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const AppShell(), // ✅ home page
+                ),
+                    (route) => false, // removes all previous routes
+              );
+            },
+          ),
+          title: const Text(
+            "Our Destinations",
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: AppColors.darkGold1,
+            ),
+          ),
+          centerTitle: true,
+          backgroundColor: Colors.white,
+          elevation: 0,
+        ),
         body: BlocBuilder<OurHotelsBloc, OurHotelsState>(
           builder: (context, state) {
             if (state.loading) {
@@ -32,14 +63,14 @@ class OurHotelsPage extends StatelessWidget {
             return ListView(
               padding: const EdgeInsets.all(24),
               children: [
-                Text(
-                  state.data!.title,
-                  style: const TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
+                // Text(
+                //   state.data!.title,
+                //   style: const TextStyle(
+                //     fontSize: 32,
+                //     fontWeight: FontWeight.bold,
+                //   ),
+                //   textAlign: TextAlign.center,
+                // ),
 
                 const SizedBox(height: 20),
 

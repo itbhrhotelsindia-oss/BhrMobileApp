@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../features/home/view/home_page.dart';
 import '../features/our_hotels/view/our_hotels_page.dart';
+import '../features/weddings/view/weddings_page.dart';
 import '../core/theme/app_colors.dart';
 
 class AppShell extends StatefulWidget {
@@ -17,7 +18,7 @@ class _AppShellState extends State<AppShell> {
   final pages = const [
     HomePage(),
     OurHotelsPage(),
-    Center(child: Text("Weddings")),
+    WeddingsPage(),
     Center(child: Text("Blogs")),
     Center(child: Text("Events")),
   ];
