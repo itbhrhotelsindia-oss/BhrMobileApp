@@ -35,9 +35,13 @@ class AppColors {
   static const Color lightGold = Color(0xFFF8EBDC);
   static const Color darkGold1 = Color(0xFFCFA349);
   static const Color darkGold2 = Color(0xFFA6781F);
+  static const Color lightGold2 = Color(0xFFF7F2EC);
   static const Color mainBlue = Color(0xFF1A2435);
   static const Color lightBlue = Color(0xFF46546F);
   static const Color lightBlue2 = Color(0xFF2B374D);
+  static const Color lightBlue3 = Color(0xFF4A5B7B);
+  static const Color gray = Color(0xFFC8C7C7);
+  static const Color black = Color(0xFF000000);
 
 
   static const LinearGradient goldBtnGradient =

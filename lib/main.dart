@@ -19,8 +19,13 @@ import 'features/weddings/bloc/weddings_bloc.dart';
 import 'features/weddings/bloc/weddings_event.dart';
 import 'features/weddings/repository/weddings_repository.dart';
 
+import 'features/event/bloc/events_bloc.dart';
+import 'features/event/bloc/events_event.dart';
+import 'features/event/repository/events_repository.dart';
+
 import 'app/app_shell.dart';
 import 'core/theme/app_theme.dart';
+import 'core/theme/app_colors.dart';
 
 void main() {
   const baseUrl = "https://hotel-backend-nq72.onrender.com";
@@ -32,6 +37,7 @@ void main() {
   final headerRepository = HeaderRepository(apiClient);
   final ourHotelsRepository = OurHotelsRepository(apiClient);
   final weddingsRepository = WeddingsRepository(apiClient);
+  final eventRepository = EventsRepository(apiClient);
 
   runApp(
       MultiRepositoryProvider(
@@ -66,6 +72,13 @@ void main() {
                 weddingsRepository,
               )..add(LoadWeddings()),
             ),
+
+            /// Events
+            BlocProvider<EventsBloc>(
+              create: (_) => EventsBloc(
+                eventRepository,
+              )..add(LoadEventsPage()),
+            ),
           ],
           child: const MyApp(),
         )
@@ -85,7 +98,7 @@ class MyApp extends StatelessWidget {
       title: "Hotel App",
       theme: ThemeData(
         useMaterial3: true,
-        colorSchemeSeed: Colors.amber,
+        colorSchemeSeed: AppColors.lightGold,
         scaffoldBackgroundColor: Colors.white,
       ),
 

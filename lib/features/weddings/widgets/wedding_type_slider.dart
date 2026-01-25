@@ -50,20 +50,18 @@ class _WeddingTypeSliderState extends State<WeddingTypeSlider> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 40),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-      ),
-      child: Text(
-        widget.title,
-        style: const TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    ),
-    const SizedBox(height: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              widget.title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ),
+          const SizedBox(height: 12),
+
           // Padding(
           //   padding: const EdgeInsets.symmetric(horizontal: 24),
           //   child: Text(
@@ -73,9 +71,8 @@ class _WeddingTypeSliderState extends State<WeddingTypeSlider> {
           //   ),
           // ),
           // const SizedBox(height: 30),
-
-          SizedBox(
-            height: 400,
+          AspectRatio(
+            aspectRatio: 0.95,
             child: PageView.builder(
               controller: controller,
               itemCount: widget.items.length,
@@ -103,10 +100,7 @@ class _WeddingTypeSliderState extends State<WeddingTypeSlider> {
                         ),
                       ),
                       const SizedBox(height: 6),
-                      Text(
-                        item.text,
-                        textAlign: TextAlign.center,
-                      ),
+                      Text(item.text, textAlign: TextAlign.center),
                     ],
                   ),
                 );

@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import '../features/home/view/home_page.dart';
 import '../features/our_hotels/view/our_hotels_page.dart';
 import '../features/weddings/view/weddings_page.dart';
+import '../features/blog/view/blog_page.dart';
+import '../features/partner/view/partner_page.dart';
+import '../features/event/view/events_page.dart';
 import '../core/theme/app_colors.dart';
 
 class AppShell extends StatefulWidget {
@@ -19,8 +22,9 @@ class _AppShellState extends State<AppShell> {
     HomePage(),
     OurHotelsPage(),
     WeddingsPage(),
-    Center(child: Text("Blogs")),
-    Center(child: Text("Events")),
+    // BlogPage(),
+    EventsPage(),
+    PartnerPage(),
   ];
 
   @override
@@ -74,12 +78,12 @@ class _AppShellState extends State<AppShell> {
             label: "Weddings",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.book),
-            label: "Blogs",
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.event),
             label: "Events",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.handshake),
+            label: "Partner With Us",
           ),
         ],
       ),

@@ -6,10 +6,7 @@ import '../../../utils/expandable_text.dart';
 class WeddingFestivitiesSection extends StatelessWidget {
   final FestivitiesModel festivities;
 
-  const WeddingFestivitiesSection({
-    super.key,
-    required this.festivities,
-  });
+  const WeddingFestivitiesSection({super.key, required this.festivities});
 
   @override
   Widget build(BuildContext context) {
@@ -21,10 +18,7 @@ class WeddingFestivitiesSection extends StatelessWidget {
           child: Text(
             festivities.title,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
         ),
 
@@ -47,9 +41,7 @@ class WeddingFestivitiesSection extends StatelessWidget {
         const SizedBox(height: 30),
 
         /// FESTIVITIES LIST
-        ...festivities.festivitiesList.map(
-              (item) => _FestivityCard(item),
-        ),
+        ...festivities.festivitiesList.map((item) => _FestivityCard(item)),
       ],
     );
   }
@@ -63,24 +55,18 @@ class _FestivityCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(
-        bottom: 40,
-        left: 20,
-        right: 20,
-      ),
+      padding: const EdgeInsets.only(bottom: 40, left: 20, right: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           /// TITLE
           Text(
             item.title,
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
 
           const SizedBox(height: 16),
+
           /// IMAGE
           ClipRRect(
             borderRadius: BorderRadius.circular(18),
@@ -94,14 +80,10 @@ class _FestivityCard extends StatelessWidget {
             ),
           ),
 
-
-
           const SizedBox(height: 8),
 
           /// DESCRIPTION
-          ExpandableText(
-            text: item.text,
-          )
+          ExpandableText(text: item.text),
         ],
       ),
     );
