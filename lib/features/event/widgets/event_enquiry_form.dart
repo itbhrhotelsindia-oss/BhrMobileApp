@@ -31,6 +31,8 @@ class _EventEnquiryFormState extends State<EventEnquiryForm> {
   final emailCtrl = TextEditingController();
   final phoneCtrl = TextEditingController();
   final queryCtrl = TextEditingController();
+  String responseMsg = "";
+  bool isSuccess = false;
 
   String countryCode = "+91";
   String eventType = "";
@@ -62,9 +64,33 @@ class _EventEnquiryFormState extends State<EventEnquiryForm> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<EventsBloc, EventsState>(
-      builder: (context, state) {
-        final submitting = state is EventsSubmitting;
+    return BlocListener<EventsBloc, EventsState>(
+        listener: (context, state) {
+          if (state is EventsSuccess) {
+            setState(() {
+              responseMsg = state.message;
+              isSuccess = true;
+
+              nameCtrl.clear();
+              emailCtrl.clear();
+              phoneCtrl.clear();
+              queryCtrl.clear();
+
+              eventType = "";
+              location = "";
+            });
+          }
+
+          if (state is EventsError) {
+            setState(() {
+              responseMsg = state.message;
+              isSuccess = false;
+            });
+          }
+        },
+        child: BlocBuilder<EventsBloc, EventsState>(
+          builder: (context, state) {
+            final submitting = state is EventsSubmitting;
 
         return Container(
           child: Center(
@@ -228,6 +254,20 @@ class _EventEnquiryFormState extends State<EventEnquiryForm> {
                                 ),
                         ),
                       ),
+                      if (responseMsg.isNotEmpty) ...[
+                        const SizedBox(height: 20),
+                        Center(
+                          child: Text(
+                            responseMsg,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color:
+                              isSuccess ? Colors.green : Colors.red,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
                     ],
                   ),
                 ),
@@ -236,6 +276,7 @@ class _EventEnquiryFormState extends State<EventEnquiryForm> {
           ),
         );
       },
+        )
     );
   }
 

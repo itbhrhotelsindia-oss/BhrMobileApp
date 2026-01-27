@@ -12,6 +12,7 @@ import '../widgets/brands_section.dart';
 import '../widgets/events_section.dart';
 import '../widgets/footer.dart';
 import 'package:bhrhotel/features/booking/widgets/booking_modal.dart';
+import 'package:bhrhotel/core/widgets/app_drawer.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -41,6 +42,21 @@ class HomePage extends StatelessWidget {
         final HomeModel home = state.data!;
 
         return Scaffold(
+          drawer: const AppDrawer(),
+
+          appBar: AppBar(
+            elevation: 0,
+            backgroundColor: Colors.white,
+            iconTheme: const IconThemeData(color: Colors.black),
+            title: const Text(
+              "BHR Hotels",
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            centerTitle: true,
+          ),
           body: ListView.builder(
             itemCount: 5,
             itemBuilder: (context, index) {

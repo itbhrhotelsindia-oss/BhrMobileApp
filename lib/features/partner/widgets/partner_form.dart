@@ -5,6 +5,7 @@ import '../bloc/partner_bloc.dart';
 import '../bloc/partner_event.dart';
 import '../model/city_model.dart';
 import '../model/partner_form_model.dart';
+import '../../../core/theme/app_colors.dart';
 
 class PartnerForm extends StatefulWidget {
   final List<CityModel> cities;
@@ -19,91 +20,212 @@ class _PartnerFormState extends State<PartnerForm> {
   final formKey = GlobalKey<FormState>();
   final form = PartnerFormModel();
 
+  InputDecoration _decoration(String label, IconData icon) {
+    return InputDecoration(
+      hintText: label,
+      hintStyle: const TextStyle(color: Colors.black),
+      prefixIcon: Icon(icon, color: Colors.grey.shade600),
+      filled: true,
+      fillColor: AppColors.gray,
+      contentPadding:
+      const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide.none,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
-      child: Form(
-        key: formKey,
-        child: Column(
-          children: [
-            _input("Company Name*", (v) => form.companyName = v!),
-            _input("Website", (v) => form.website = v ?? ""),
-            _input("Full Name*", (v) => form.fullName = v!),
-            _input("Email*", (v) => form.email = v!),
-            _input("Contact Number*", (v) => form.contactNumber = v!),
+      child: Center(
+        child: Card(
+          elevation: 6,
+          shadowColor: Colors.black12,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Form(
+              key: formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // /// HEADER
+                  // const Text(
+                  //   "Partner With Us",
+                  //   style: TextStyle(
+                  //     fontSize: 26,
+                  //     fontWeight: FontWeight.w700,
+                  //   ),
+                  // ),
+                  const SizedBox(height: 6),
+                  const Text(
+                    "Share your details and our partnership team will contact you.",
+                    style: TextStyle(
+                      color: Colors.black54,
+                      height: 1.4,
+                    ),
+                  ),
 
-            DropdownButtonFormField(
-              hint: const Text("Select Partnership Type"),
-              items: const [
-                "Hotel Franchise",
-                "Management Contract",
-                "Investment Partnership",
-                "Corporate Collaboration",
-                "Vendor / Supplier Partnership",
-                "Register Your Hotel"
-              ]
-                  .map((e) =>
-                  DropdownMenuItem(value: e, child: Text(e)))
-                  .toList(),
-              onChanged: (v) =>
-              form.partnershipType = v.toString(),
-              validator: (v) =>
-              v == null ? "Required" : null,
-            ),
+                  const SizedBox(height: 30),
 
-            const SizedBox(height: 16),
+                  /// COMPANY
+                  _input(
+                    "Company Name *",
+                    Icons.business,
+                        (v) => form.companyName = v!,
+                  ),
 
-            DropdownButtonFormField(
-              hint: const Text("Select Location"),
-              items: widget.cities
-                  .map(
-                    (c) => DropdownMenuItem(
-                  value: c.id,
-                  child: Text(c.name),
-                ),
-              )
-                  .toList(),
-              onChanged: (v) => form.location = v.toString(),
-              validator: (v) =>
-              v == null ? "Required" : null,
-            ),
+                  _input(
+                    "Website",
+                    Icons.language,
+                        (v) => form.website = v ?? "",
+                  ),
 
-            const SizedBox(height: 16),
+                  _input(
+                    "Full Name *",
+                    Icons.person_outline,
+                        (v) => form.fullName = v!,
+                  ),
 
-            TextFormField(
-              maxLines: 4,
-              decoration:
-              const InputDecoration(labelText: "Message"),
-              onChanged: (v) => form.message = v,
-            ),
+                  _input(
+                    "Email Address *",
+                    Icons.email_outlined,
+                        (v) => form.email = v!,
+                    keyboard: TextInputType.emailAddress,
+                  ),
 
-            const SizedBox(height: 30),
+                  _input(
+                    "Contact Number *",
+                    Icons.phone_outlined,
+                        (v) => form.contactNumber = v!,
+                    keyboard: TextInputType.phone,
+                  ),
 
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  if (!formKey.currentState!.validate()) return;
+                  const SizedBox(height: 18),
 
-                  context
-                      .read<PartnerBloc>()
-                      .add(SubmitPartnerForm(form));
-                },
-                child: const Text("Submit Application"),
+                  /// PARTNERSHIP TYPE
+                  DropdownButtonFormField(
+                    decoration: _decoration(
+                      "Partnership Type *",
+                      Icons.handshake_outlined,
+                    ),
+                    items: const [
+                      "Hotel Franchise",
+                      "Management Contract",
+                      "Investment Partnership",
+                      "Corporate Collaboration",
+                      "Vendor / Supplier Partnership",
+                      "Register Your Hotel",
+                    ]
+                        .map(
+                          (e) => DropdownMenuItem(
+                        value: e,
+                        child: Text(
+                          e,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    )
+                        .toList(),
+                    onChanged: (v) =>
+                    form.partnershipType = v.toString(),
+                    validator: (v) =>
+                    v == null ? "Required" : null,
+                  ),
+
+                  const SizedBox(height: 18),
+
+                  /// LOCATION
+                  DropdownButtonFormField(
+                    decoration: _decoration(
+                      "Preferred Location *",
+                      Icons.location_on_outlined,
+                    ),
+                    items: widget.cities
+                        .map(
+                          (c) => DropdownMenuItem(
+                        value: c.id,
+                        child: Text(c.name),
+                      ),
+                    )
+                        .toList(),
+                    onChanged: (v) =>
+                    form.location = v.toString(),
+                    validator: (v) =>
+                    v == null ? "Required" : null,
+                  ),
+
+                  const SizedBox(height: 18),
+
+                  /// MESSAGE
+                  TextFormField(
+                    maxLines: 4,
+                    decoration: _decoration(
+                      "Additional Message",
+                      Icons.message_outlined,
+                    ),
+                    onChanged: (v) => form.message = v,
+                  ),
+
+                  const SizedBox(height: 32),
+
+                  /// SUBMIT BUTTON
+                  SizedBox(
+                    width: double.infinity,
+                    height: 56,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.darkGold1,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(40),
+                        ),
+                        elevation: 4,
+                      ),
+                      onPressed: () {
+                        if (!formKey.currentState!.validate()) {
+                          return;
+                        }
+
+                        context
+                            .read<PartnerBloc>()
+                            .add(SubmitPartnerForm(form));
+                      },
+                      child: const Text(
+                        "SUBMIT APPLICATION",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 1,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _input(String label, Function(String?) onChanged) {
+  Widget _input(
+      String label,
+      IconData icon,
+      Function(String?) onChanged, {
+        TextInputType keyboard = TextInputType.text,
+      }) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 14),
+      padding: const EdgeInsets.only(bottom: 18),
       child: TextFormField(
-        decoration: InputDecoration(labelText: label),
+        keyboardType: keyboard,
+        decoration: _decoration(label, icon),
         validator: (v) =>
         (v == null || v.isEmpty) ? "Required" : null,
         onChanged: onChanged,

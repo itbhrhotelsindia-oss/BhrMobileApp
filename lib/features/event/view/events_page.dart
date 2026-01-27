@@ -8,8 +8,12 @@ import '../../event/widgets/event_slider_widget.dart';
 import '../bloc/events_bloc.dart';
 import '../bloc/events_event.dart';
 import '../bloc/events_state.dart';
+import '../model/events_page_model.dart';
 import '../repository/events_repository.dart';
 import 'package:bhrhotel/core/api_client.dart';
+import '../../our_hotels/model/city_model.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../app/app_shell.dart';
 
 class EventsPage extends StatefulWidget {
   const EventsPage({super.key});
@@ -21,96 +25,114 @@ class EventsPage extends StatefulWidget {
 class _EventsPageState extends State<EventsPage> {
   String selected = "";
 
+  EventsPageModel? cachedPage;
+  List<CityModel> cachedCities = [];
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => context.read<EventsBloc>()
-        ..add(LoadEventsPage()),
+      create: (_) =>
+      context.read<EventsBloc>()..add(LoadEventsPage()),
       child: Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back_ios_new,
+              color: AppColors.darkGold1,
+              size: 20,
+            ),
+            onPressed: () {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const AppShell(), // ✅ home page
+                ),
+                    (route) => false, // removes all previous routes
+              );
+            },
+          ),
           title: const Text("Events"),
           centerTitle: true,
         ),
         body: BlocBuilder<EventsBloc, EventsState>(
           builder: (context, state) {
-            if (state is EventsLoading ||
-                state is EventsInitial) {
+
+            /// ---------- SAVE DATA ONCE ----------
+            if (state is EventsLoaded) {
+              cachedPage = state.data;
+              cachedCities = state.cities;
+            }
+
+            /// ---------- SHOW LOADER INITIALLY ----------
+            if (cachedPage == null) {
               return const Center(
                 child: CircularProgressIndicator(),
               );
             }
 
-            if (state is EventsError) {
-              return Center(child: Text(state.message));
-            }
+            final data = cachedPage!;
 
-            if (state is EventsLoaded) {
-              final data = state.data;
+            selected = selected.isEmpty
+                ? data.eventsSection.eventCategories.first.key
+                : selected;
 
-              selected = selected.isEmpty
-                  ? data.eventsSection.eventCategories.first.key
-                  : selected;
+            final selectedEvent = data.eventsSection.eventCategories
+                .firstWhere((e) => e.key == selected);
 
-              final selectedEvent = data.eventsSection.eventCategories
-                  .firstWhere((e) => e.key == selected);
+            return SingleChildScrollView(
+              child: Column(
+                children: [
 
-              return SingleChildScrollView(
-                child: Column(
-                  children: [
-                    /// SLIDER
-                    EventSliderWidget(
-                      images: data.eventSlider.images,
-                      autoPlay: data.eventSlider.autoPlay,
-                      interval: data.eventSlider.interval,
-                    ),
+                  /// SLIDER
+                  EventSliderWidget(
+                    images: data.eventSlider.images,
+                    autoPlay: data.eventSlider.autoPlay,
+                    interval: data.eventSlider.interval,
+                  ),
 
-                    const SizedBox(height: 20),
+                  const SizedBox(height: 20),
 
-                    /// DESCRIPTION
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Text(
-                        data.eventsSection.description,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          height: 1.6,
-                        ),
+                  /// DESCRIPTION
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Text(
+                      data.eventsSection.description,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        height: 1.6,
                       ),
                     ),
+                  ),
 
-                    const SizedBox(height: 30),
+                  const SizedBox(height: 30),
 
-                    /// CATEGORY GRID
-                    EventCategoryGrid(
-                      categories: data.eventsSection.eventCategories,
-                      selectedKey: selected,
-                      onSelected: (category) {
-                        setState(() {
-                          selected = category.key;
-                        });
-                      },
-                    ),
+                  /// CATEGORY GRID
+                  EventCategoryGrid(
+                    categories: data.eventsSection.eventCategories,
+                    selectedKey: selected,
+                    onSelected: (category) {
+                      setState(() {
+                        selected = category.key;
+                      });
+                    },
+                  ),
 
-                    const SizedBox(height: 40),
+                  const SizedBox(height: 40),
 
-                    /// FORM
+                  /// FORM
                   EventEnquiryForm(
                     selectedCategory: selected,
                     eventTypes: data.eventsSection.eventCategories
-                      .map((e) => e.title)
-                      .toList(),
-                    cities: state.cities,
+                        .map((e) => e.title)
+                        .toList(),
+                    cities: cachedCities,
                   ),
 
-                    const SizedBox(height: 60),
-                  ],
-                ),
-              );
-            }
-
-
-            return const SizedBox();
+                  const SizedBox(height: 60),
+                ],
+              ),
+            );
           },
         ),
       ),

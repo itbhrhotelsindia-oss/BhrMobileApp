@@ -23,9 +23,20 @@ import 'features/event/bloc/events_bloc.dart';
 import 'features/event/bloc/events_event.dart';
 import 'features/event/repository/events_repository.dart';
 
+import 'features/legal/repository/legal_repository.dart';
+
 import 'app/app_shell.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/app_colors.dart';
+import 'core/view/about_page.dart';
+import 'core/view/contact_page.dart';
+import 'core/view/careers_page.dart';
+import 'core/view/why_book_direct_page.dart';
+import 'core/view/manage_booking_page.dart';
+import 'features/legal/view/terms_and_conditions_page.dart';
+import 'features/legal/view/privacy_policy_page.dart';
+import 'features/legal/view/refund_policy_page.dart';
+import 'features/blog/view/blog_page.dart';
 
 void main() {
   const baseUrl = "https://hotel-backend-nq72.onrender.com";
@@ -44,6 +55,10 @@ void main() {
         providers: [
           RepositoryProvider.value(value: apiClient),
           RepositoryProvider.value(value: hotelDetailRepository),
+          RepositoryProvider(
+            create: (context) =>
+                LegalRepository(context.read<ApiClient>()),
+          ),
         ],
         child: MultiBlocProvider(
           providers: [
@@ -95,6 +110,17 @@ class MyApp extends StatelessWidget {
       // theme: AppTheme.lightTheme,
       // home: const AppShell(),
       debugShowCheckedModeBanner: false,
+      routes: {
+        "/blog": (_) => const BlogPage(),
+        "/about": (_) => const AboutPage(),
+        "/contact": (_) => const ContactPage(),
+        "/careers": (_) => const CareersPage(),
+        "/whyBookDirect": (_) => const WhyBookDirectPage(),
+        "/manageBooking": (_) => const ManageBookingPage(),
+        "/termsAndCondition": (_) => const TermsAndConditionsPage(),
+        "/privacyPolicy": (_) => const PrivacyPolicyPage(),
+        "/refundAndCancellation": (_) => const RefundPolicyPage(),
+      },
       title: "Hotel App",
       theme: ThemeData(
         useMaterial3: true,

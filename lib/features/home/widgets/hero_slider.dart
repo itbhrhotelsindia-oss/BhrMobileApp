@@ -30,28 +30,28 @@ class HeroSlider extends StatelessWidget {
             color: Colors.black.withOpacity(0.25),
           ),
 
-          /// 🔹 TOP ICONS
-          Positioned(
-            top: 20,
-            right: 20,
-            child: Row(
-              children: [
-                _circleIcon(
-                  icon: Icons.local_offer,
-                  onTap: () {
-                    // TODO: navigate to offers tab
-                  },
-                ),
-                const SizedBox(width: 12),
-                _circleIcon(
-                  icon: Icons.person,
-                  onTap: () {
-                    // TODO: navigate to profile tab
-                  },
-                ),
-              ],
-            ),
-          ),
+          // /// 🔹 TOP ICONS
+          // Positioned(
+          //   top: 20,
+          //   right: 20,
+          //   child: Row(
+          //     children: [
+          //       _circleIcon(
+          //         icon: Icons.local_offer,
+          //         onTap: () {
+          //           // TODO: navigate to offers tab
+          //         },
+          //       ),
+          //       const SizedBox(width: 12),
+          //       _circleIcon(
+          //         icon: Icons.person,
+          //         onTap: () {
+          //           // TODO: navigate to profile tab
+          //         },
+          //       ),
+          //     ],
+          //   ),
+          // ),
 
           /// 🔹 BOOK NOW BUTTON
           Positioned(
