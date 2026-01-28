@@ -41,6 +41,16 @@ class AppDrawer extends StatelessWidget {
 
           _item(
             context,
+            icon: Icons.local_offer_outlined,
+            title: "Offers",
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, "/offers");
+            },
+          ),
+
+          _item(
+            context,
             icon: Icons.info_outline,
             title: "About Us",
             onTap: () {

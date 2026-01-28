@@ -37,6 +37,7 @@ import 'features/legal/view/terms_and_conditions_page.dart';
 import 'features/legal/view/privacy_policy_page.dart';
 import 'features/legal/view/refund_policy_page.dart';
 import 'features/blog/view/blog_page.dart';
+import 'features/offers/view/offers_page.dart';
 
 void main() {
   const baseUrl = "https://hotel-backend-nq72.onrender.com";
@@ -112,6 +113,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: {
         "/blog": (_) => const BlogPage(),
+        "/offers": (_) => const OffersPage(),
         "/about": (_) => const AboutPage(),
         "/contact": (_) => const ContactPage(),
         "/careers": (_) => const CareersPage(),

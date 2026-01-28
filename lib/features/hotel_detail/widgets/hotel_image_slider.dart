@@ -56,14 +56,14 @@ class _HotelImageSliderState extends State<HotelImageSlider> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        /// IMAGE SLIDER
+        /// ================= IMAGE SLIDER =================
         SizedBox(
           height: 280,
           child: PageView.builder(
             controller: _controller,
             itemCount: widget.images.length,
             onPageChanged: (i) {
-              _currentPage = i;
+              setState(() => _currentPage = i);
             },
             itemBuilder: (_, i) {
               return Image.network(
@@ -83,7 +83,30 @@ class _HotelImageSliderState extends State<HotelImageSlider> {
           ),
         ),
 
-        /// DOT INDICATOR
+        /// ================= BACK BUTTON =================
+        Positioned(
+          top: MediaQuery.of(context).padding.top + 10,
+          left: 12,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(40),
+            onTap: () => Navigator.pop(context),
+            child: Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.45),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.arrow_back_ios_new,
+                size: 20,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+
+        /// ================= DOT INDICATOR =================
         Positioned(
           bottom: 12,
           left: 0,
@@ -98,9 +121,8 @@ class _HotelImageSliderState extends State<HotelImageSlider> {
                 width: _currentPage == i ? 22 : 8,
                 height: 8,
                 decoration: BoxDecoration(
-                  color: _currentPage == i
-                      ? Colors.white
-                      : Colors.white54,
+                  color:
+                  _currentPage == i ? Colors.white : Colors.white54,
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),

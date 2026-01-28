@@ -31,8 +31,7 @@ class _EventsPageState extends State<EventsPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) =>
-      context.read<EventsBloc>()..add(LoadEventsPage()),
+      create: (_) => context.read<EventsBloc>()..add(LoadEventsPage()),
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -47,16 +46,22 @@ class _EventsPageState extends State<EventsPage> {
                 MaterialPageRoute(
                   builder: (_) => const AppShell(), // ✅ home page
                 ),
-                    (route) => false, // removes all previous routes
+                (route) => false, // removes all previous routes
               );
             },
           ),
-          title: const Text("Events"),
+          title: const Text(
+            "Events",
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: AppColors.darkGold1,
+            ),
+          ),
           centerTitle: true,
         ),
         body: BlocBuilder<EventsBloc, EventsState>(
           builder: (context, state) {
-
             /// ---------- SAVE DATA ONCE ----------
             if (state is EventsLoaded) {
               cachedPage = state.data;
@@ -65,9 +70,7 @@ class _EventsPageState extends State<EventsPage> {
 
             /// ---------- SHOW LOADER INITIALLY ----------
             if (cachedPage == null) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              return const Center(child: CircularProgressIndicator());
             }
 
             final data = cachedPage!;
@@ -76,13 +79,13 @@ class _EventsPageState extends State<EventsPage> {
                 ? data.eventsSection.eventCategories.first.key
                 : selected;
 
-            final selectedEvent = data.eventsSection.eventCategories
-                .firstWhere((e) => e.key == selected);
+            final selectedEvent = data.eventsSection.eventCategories.firstWhere(
+              (e) => e.key == selected,
+            );
 
             return SingleChildScrollView(
               child: Column(
                 children: [
-
                   /// SLIDER
                   EventSliderWidget(
                     images: data.eventSlider.images,
@@ -98,10 +101,7 @@ class _EventsPageState extends State<EventsPage> {
                     child: Text(
                       data.eventsSection.description,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        height: 1.6,
-                      ),
+                      style: const TextStyle(fontSize: 16, height: 1.6),
                     ),
                   ),
 
@@ -139,4 +139,3 @@ class _EventsPageState extends State<EventsPage> {
     );
   }
 }
-

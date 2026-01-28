@@ -17,57 +17,60 @@ class PartnerPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => PartnerBloc(
-        PartnerRepository(
-          ApiClient("https://hotel-backend-nq72.onrender.com"),
-        ),
+        PartnerRepository(ApiClient("https://hotel-backend-nq72.onrender.com")),
       )..add(LoadCities()),
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios_new,
-            color: AppColors.darkGold1,
-            size: 20,
-          ),
-          onPressed: () {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                builder: (_) => const AppShell(), // ✅ home page
-              ),
-                  (route) => false, // removes all previous routes
-            );
-          },
-        ),
-          title: const Text("Partner With Us"),
-          centerTitle: true,
-        ),
-        body: BlocConsumer<PartnerBloc, PartnerState>(
-          listener: (context, state) {
-            if (state is PartnerSuccess) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message)),
-              );
+            icon: const Icon(
+              Icons.arrow_back_ios_new,
+              color: AppColors.darkGold1,
+              size: 20,
+            ),
+            onPressed: () {
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
                   builder: (_) => const AppShell(), // ✅ home page
                 ),
-                    (route) => false, // removes all previous routes
+                (route) => false, // removes all previous routes
+              );
+            },
+          ),
+          title: const Text(
+            "Partner With Us",
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: AppColors.darkGold1,
+            ),
+          ),
+          centerTitle: true,
+        ),
+        body: BlocConsumer<PartnerBloc, PartnerState>(
+          listener: (context, state) {
+            if (state is PartnerSuccess) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(state.message)));
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const AppShell(), // ✅ home page
+                ),
+                (route) => false, // removes all previous routes
               );
             }
 
             if (state is PartnerError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message)),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(state.message)));
             }
           },
           builder: (context, state) {
             if (state is PartnerLoading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              return const Center(child: CircularProgressIndicator());
             }
 
             if (state is CitiesLoaded) {

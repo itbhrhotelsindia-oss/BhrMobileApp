@@ -7,6 +7,7 @@ import '../model/hotel_model.dart';
 import '../../hotel_detail/view/hotel_detail_page.dart';
 import '../view/city_hotels_page.dart';
 import '../../../core/theme/app_colors.dart';
+import 'package:bhrhotel/app/app_shell.dart';
 
 class CityHotelsPage extends StatelessWidget {
   final CityModel city;
@@ -20,7 +21,30 @@ class CityHotelsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(city.name),
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios_new,
+            color: AppColors.darkGold1,
+            size: 20,
+          ),
+          onPressed: () {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const AppShell(), // ✅ home page
+              ),
+                  (route) => false, // removes all previous routes
+            );
+          },
+        ),
+        title: Text(
+          city.name,
+          style: TextStyle(
+            fontSize: 22,
+            color: AppColors.darkGold1,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         centerTitle: true,
       ),
       body: ListView.builder(

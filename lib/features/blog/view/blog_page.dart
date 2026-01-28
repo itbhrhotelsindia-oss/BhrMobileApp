@@ -29,30 +29,27 @@ class BlogPage extends StatelessWidget {
               size: 20,
             ),
             onPressed: () {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const AppShell(), // ✅ home page
-                ),
-                    (route) => false, // removes all previous routes
-              );
+              Navigator.pop(context);
             },
           ),
-          title: const Text("Blogs"),
+          title: const Text(
+            "Blogs",
+            style: TextStyle(
+              fontSize: 22,
+              color: AppColors.darkGold1,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
           centerTitle: true,
         ),
         body: BlocBuilder<BlogBloc, BlogState>(
           builder: (context, state) {
             if (state is BlogLoading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              return const Center(child: CircularProgressIndicator());
             }
 
             if (state is BlogError) {
-              return Center(
-                child: Text(state.message),
-              );
+              return Center(child: Text(state.message));
             }
 
             final blog = (state as BlogLoaded).blog;
@@ -61,12 +58,8 @@ class BlogPage extends StatelessWidget {
               child: Column(
                 children: [
                   BlogHeroSection(blog: blog),
-                  BlogGridSection(
-                    section: blog.blogListSection,
-                  ),
-                  BlogSidebarSection(
-                    section: blog.popularPostListSection,
-                  ),
+                  BlogGridSection(section: blog.blogListSection),
+                  BlogSidebarSection(section: blog.popularPostListSection),
                 ],
               ),
             );

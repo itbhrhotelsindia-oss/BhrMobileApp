@@ -3,6 +3,8 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:photo_view/photo_view.dart';
 
 import '../model/blog_detail_model.dart';
+import 'package:bhrhotel/core/theme/app_colors.dart';
+import 'package:bhrhotel/app/app_shell.dart';
 
 class BlogDetailPage extends StatelessWidget {
   final BlogDetailModel blog;
@@ -16,10 +18,25 @@ class BlogDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios_new,
+            color: AppColors.darkGold1,
+            size: 20,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         title: Text(
           blog.title,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: AppColors.darkGold1,
+          ),
         ),
         centerTitle: true,
       ),
