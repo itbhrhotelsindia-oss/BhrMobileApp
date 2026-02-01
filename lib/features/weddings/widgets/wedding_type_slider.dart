@@ -52,25 +52,25 @@ class _WeddingTypeSliderState extends State<WeddingTypeSlider> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              widget.title,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-          ),
-          const SizedBox(height: 12),
-
           // Padding(
-          //   padding: const EdgeInsets.symmetric(horizontal: 24),
+          //   padding: const EdgeInsets.symmetric(horizontal: 16),
           //   child: Text(
-          //     widget.description,
+          //     widget.title,
           //     textAlign: TextAlign.center,
-          //     style: const TextStyle(color: Colors.black54),
+          //     style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           //   ),
           // ),
-          // const SizedBox(height: 30),
+          // const SizedBox(height: 12),
+
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Text(
+              widget.description,
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.black87),
+            ),
+          ),
+          const SizedBox(height: 30),
           AspectRatio(
             aspectRatio: 0.95,
             child: PageView.builder(
