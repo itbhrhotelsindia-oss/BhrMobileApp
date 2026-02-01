@@ -30,112 +30,104 @@ class _EventsPageState extends State<EventsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => context.read<EventsBloc>()..add(LoadEventsPage()),
-      child: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back_ios_new,
-              color: AppColors.darkGold1,
-              size: 20,
-            ),
-            onPressed: () {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const AppShell(), // ✅ home page
-                ),
-                (route) => false, // removes all previous routes
-              );
-            },
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back_ios_new,
+            color: AppColors.darkGold1,
+            size: 20,
           ),
-          title: const Text(
-            "Events",
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: AppColors.darkGold1,
-            ),
-          ),
-          centerTitle: true,
-        ),
-        body: BlocBuilder<EventsBloc, EventsState>(
-          builder: (context, state) {
-            /// ---------- SAVE DATA ONCE ----------
-            if (state is EventsLoaded) {
-              cachedPage = state.data;
-              cachedCities = state.cities;
-            }
-
-            /// ---------- SHOW LOADER INITIALLY ----------
-            if (cachedPage == null) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            final data = cachedPage!;
-
-            selected = selected.isEmpty
-                ? data.eventsSection.eventCategories.first.key
-                : selected;
-
-            final selectedEvent = data.eventsSection.eventCategories.firstWhere(
-              (e) => e.key == selected,
-            );
-
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  /// SLIDER
-                  EventSliderWidget(
-                    images: data.eventSlider.images,
-                    autoPlay: data.eventSlider.autoPlay,
-                    interval: data.eventSlider.interval,
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  /// DESCRIPTION
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Text(
-                      data.eventsSection.description,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 16, height: 1.6),
-                    ),
-                  ),
-
-                  const SizedBox(height: 30),
-
-                  /// CATEGORY GRID
-                  EventCategoryGrid(
-                    categories: data.eventsSection.eventCategories,
-                    selectedKey: selected,
-                    onSelected: (category) {
-                      setState(() {
-                        selected = category.key;
-                      });
-                    },
-                  ),
-
-                  const SizedBox(height: 40),
-
-                  /// FORM
-                  EventEnquiryForm(
-                    selectedCategory: selected,
-                    eventTypes: data.eventsSection.eventCategories
-                        .map((e) => e.title)
-                        .toList(),
-                    cities: cachedCities,
-                  ),
-
-                  const SizedBox(height: 60),
-                ],
+          onPressed: () {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const AppShell(), // ✅ home page
               ),
+                  (route) => false, // removes all previous routes
             );
           },
         ),
+        title: const Text(
+          "Events",
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: AppColors.darkGold1,
+          ),
+        ),
+        centerTitle: true,
+      ),
+
+      body: BlocBuilder<EventsBloc, EventsState>(
+        builder: (context, state) {
+          /// cache once
+          if (state is EventsLoaded) {
+            cachedPage = state.data;
+            cachedCities = state.cities;
+          }
+
+          if (cachedPage == null) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          final data = cachedPage!;
+
+          selected = selected.isEmpty
+              ? data.eventsSection.eventCategories.first.key
+              : selected;
+
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                EventSliderWidget(
+                  images: data.eventSlider.images,
+                  autoPlay: data.eventSlider.autoPlay,
+                  interval: data.eventSlider.interval,
+                ),
+
+                const SizedBox(height: 20),
+
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Text(
+                    data.eventsSection.description,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 16, height: 1.6),
+                  ),
+                ),
+
+                const SizedBox(height: 30),
+
+                EventCategoryGrid(
+                  categories: data.eventsSection.eventCategories,
+                  selectedKey: selected,
+                  onSelected: (category) {
+                    setState(() {
+                      selected = category.key;
+                    });
+                  },
+                ),
+
+                const SizedBox(height: 40),
+
+                EventEnquiryForm(
+                  selectedCategory: selected,
+                  eventTypes: data.eventsSection.eventCategories
+                      .map((e) => e.title)
+                      .toList(),
+                  cities: cachedCities,
+                ),
+
+                const SizedBox(height: 60),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
 }
+

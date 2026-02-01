@@ -63,9 +63,8 @@ class WeddingsPage extends StatelessWidget {
 
                   // WeddingHeaderTitle(title: data.title),
 
-                  WeddingVideoSection(videoUrl: data.videoUrl),
+                  // WeddingVideoSection(videoUrl: data.videoUrl),
 
-                  WeddingStatsBanner(stats: data.stats),
 
                   WeddingTypeSlider(
                     title: data.typeOfWeddings.title,
@@ -77,6 +76,7 @@ class WeddingsPage extends StatelessWidget {
                     festivities: data.festivities,
                   ),
 
+                  WeddingStatsBanner(stats: data.stats),
                   const WeddingEnquiryForm(),
                 ],
               ),
