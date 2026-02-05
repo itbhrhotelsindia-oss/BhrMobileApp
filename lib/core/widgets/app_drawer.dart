@@ -8,13 +8,14 @@ class AppDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       backgroundColor: Colors.white,
-      child: Column(
+      child: ListView(
+        padding: EdgeInsets.zero, // 👈 important for header
         children: [
           /// HEADER
-          DrawerHeader(
-            decoration: const BoxDecoration(color: AppColors.darkGold1),
+          const DrawerHeader(
+            decoration: BoxDecoration(color: AppColors.darkGold1),
             child: Row(
-              children: const [
+              children: [
                 Icon(Icons.hotel, color: Colors.white, size: 40),
                 SizedBox(width: 12),
                 Text(
@@ -68,6 +69,7 @@ class AppDrawer extends StatelessWidget {
               Navigator.pushNamed(context, "/careers");
             },
           ),
+
           _item(
             context,
             icon: Icons.savings_outlined,
@@ -134,17 +136,20 @@ class AppDrawer extends StatelessWidget {
     );
   }
 
-  Widget _item(
-    BuildContext context, {
-    required IconData icon,
-    required String title,
-    required VoidCallback onTap,
-  }) {
+  static Widget _item(
+      BuildContext context, {
+        required IconData icon,
+        required String title,
+        required VoidCallback onTap,
+      }) {
     return ListTile(
       leading: Icon(icon, color: AppColors.darkGold1),
       title: Text(
         title,
-        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+        style: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
       ),
       onTap: onTap,
     );

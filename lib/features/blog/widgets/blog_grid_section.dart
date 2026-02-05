@@ -47,7 +47,7 @@ class BlogGridSection extends StatelessWidget {
               crossAxisCount: 2,
               mainAxisSpacing: 18,
               crossAxisSpacing: 18,
-              childAspectRatio: 0.75,
+              childAspectRatio: 0.8,
             ),
             itemBuilder: (context, index) {
               final blog = section.blogsList[index];
@@ -106,7 +106,7 @@ class _BlogCard extends StatelessWidget {
               ),
               child: CachedNetworkImage(
                 imageUrl: blog.imageUrl,
-                height: 160,
+                height: 145,
                 width: double.infinity,
                 fit: BoxFit.cover,
                 placeholder: (_, __) => Container(color: Colors.black12),
@@ -115,18 +115,18 @@ class _BlogCard extends StatelessWidget {
             ),
 
             Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
+              padding: const EdgeInsets.fromLTRB(0,20,0,0),
+              child: Center(child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   /// TITLE
                   Text(
                     blog.title,
-                    maxLines: 2,
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
-                      fontSize: 16,
+                      fontSize: 14,
                     ),
                   ),
 
@@ -140,7 +140,7 @@ class _BlogCard extends StatelessWidget {
                     style: const TextStyle(fontSize: 13, color: Colors.grey),
                   ),
                 ],
-              ),
+              ),),
             ),
           ],
         ),

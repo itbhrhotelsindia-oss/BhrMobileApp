@@ -86,7 +86,7 @@ class _OffersGrid extends StatelessWidget {
           crossAxisCount: columns,
           crossAxisSpacing: 30,
           mainAxisSpacing: 30,
-          childAspectRatio: 0.68,
+          childAspectRatio: 0.65,
         ),
         itemBuilder: (_, i) {
           final offer = offers[i];
@@ -103,7 +103,7 @@ class _OffersGrid extends StatelessWidget {
                 /// IMAGE
                 Image.network(
                   offer.img,
-                  height: 260,
+                  height: 250,
                   width: double.infinity,
                   fit: BoxFit.cover,
                 ),
@@ -126,6 +126,8 @@ class _OffersGrid extends StatelessWidget {
 
                       Text(
                         offer.desc,
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           fontSize: 14,
                           height: 1.6,
