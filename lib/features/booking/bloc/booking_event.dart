@@ -1,20 +1,34 @@
-abstract class BookingEvent {}
+import 'package:equatable/equatable.dart';
 
-class SubmitBooking extends BookingEvent {}
-
-class UpdateRooms extends BookingEvent {
-  final int value;
-  UpdateRooms(this.value);
+abstract class BookingEvent extends Equatable {
+  @override
+  List<Object?> get props => [];
 }
 
-class UpdateAdults extends BookingEvent {
-  final int value;
-  UpdateAdults(this.value);
+class LoadCities extends BookingEvent {}
+
+class SelectCity extends BookingEvent {
+  final String city;
+  SelectCity(this.city);
+
+  @override
+  List<Object?> get props => [city];
 }
 
-class UpdateChildren extends BookingEvent {
-  final int value;
-  UpdateChildren(this.value);
+class SelectHotel extends BookingEvent {
+  final String hotelId;
+  SelectHotel(this.hotelId);
+
+  @override
+  List<Object?> get props => [hotelId];
+}
+
+class SelectRoomType extends BookingEvent {
+  final String roomTypeId;
+  SelectRoomType(this.roomTypeId);
+
+  @override
+  List<Object?> get props => [roomTypeId];
 }
 
 class UpdateDates extends BookingEvent {
@@ -23,3 +37,13 @@ class UpdateDates extends BookingEvent {
 
   UpdateDates(this.checkIn, this.checkOut);
 }
+
+class UpdateGuests extends BookingEvent {
+  final int adults;
+  final int children;
+  final int rooms;
+
+  UpdateGuests(this.adults, this.children, this.rooms);
+}
+
+class CheckAvailability extends BookingEvent {}

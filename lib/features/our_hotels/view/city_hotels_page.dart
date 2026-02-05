@@ -170,7 +170,7 @@ class HotelCard extends StatelessWidget {
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.pop(context);
-                            BookingModal.open(context);
+                            // BookingModal.open(context);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.lightBlue2,

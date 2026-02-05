@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../model/hotel_detail_model.dart';
 import '../../booking/widgets/booking_modal.dart';
+import '../../booking/view/booking_search_page.dart';
 
 class BookNowBottomBar extends StatelessWidget {
   final HotelDetailModel hotel;
@@ -28,7 +29,13 @@ class BookNowBottomBar extends StatelessWidget {
           top: false,
           child: ElevatedButton(
             onPressed: () {
-              BookingModal.open(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => BookingSearchPage(),
+                ),
+              );
+              // BookingModal.open(context);
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.amber,

@@ -8,9 +8,9 @@ import 'features/home/bloc/home_bloc.dart';
 import 'features/home/bloc/home_event.dart';
 import 'features/home/repository/home_repository.dart';
 
-import 'features/header/bloc/header_bloc.dart';
-import 'features/header/bloc/header_event.dart';
-import 'features/header/repository/header_repository.dart';
+// import 'features/header/bloc/header_bloc.dart';
+// import 'features/header/bloc/header_event.dart';
+// import 'features/header/repository/header_repository.dart';
 import 'features/our_hotels/bloc/our_hotels_bloc.dart';
 import 'features/our_hotels/bloc/our_hotels_event.dart';
 import 'features/our_hotels/repository/our_hotels_repository.dart';
@@ -22,6 +22,10 @@ import 'features/weddings/repository/weddings_repository.dart';
 import 'features/event/bloc/events_bloc.dart';
 import 'features/event/bloc/events_event.dart';
 import 'features/event/repository/events_repository.dart';
+
+import 'features/booking/bloc/booking_bloc.dart';
+import 'features/booking/bloc/booking_event.dart';
+import 'features/booking/repository/booking_repository.dart';
 
 import 'features/legal/repository/legal_repository.dart';
 
@@ -46,10 +50,11 @@ void main() {
   final hotelDetailRepository = HotelDetailRepository(apiClient);
 
   final homeRepository = HomeRepository(apiClient);
-  final headerRepository = HeaderRepository(apiClient);
+  // final headerRepository = HeaderRepository(apiClient);
   final ourHotelsRepository = OurHotelsRepository(apiClient);
   final weddingsRepository = WeddingsRepository(apiClient);
   final eventRepository = EventsRepository(apiClient);
+  final bookingRepository = BookingRepository(apiClient);
 
   runApp(
       MultiRepositoryProvider(
@@ -60,6 +65,10 @@ void main() {
             create: (context) =>
                 LegalRepository(context.read<ApiClient>()),
           ),
+          RepositoryProvider<BookingRepository>.value(
+            value: bookingRepository,
+          ),
+
         ],
         child: MultiBlocProvider(
           providers: [
@@ -70,10 +79,10 @@ void main() {
             ),
 
             /// CITY DROPDOWN
-            BlocProvider<HeaderBloc>(
-              create: (_) =>
-              HeaderBloc(headerRepository)..add(LoadCities()),
-            ),
+            // BlocProvider<HeaderBloc>(
+            //   create: (_) =>
+            //   HeaderBloc(headerRepository)..add(LoadCities()),
+            // ),
 
             /// Our Hotels
             BlocProvider<OurHotelsBloc>(
@@ -95,6 +104,14 @@ void main() {
                 eventRepository,
               )..add(LoadEventsPage()),
             ),
+
+            /// Booking
+            BlocProvider<BookingBloc>(
+              create: (_) => BookingBloc(
+                bookingRepository,
+              )..add(LoadCities()),
+            ),
+
           ],
           child: const MyApp(),
         )
