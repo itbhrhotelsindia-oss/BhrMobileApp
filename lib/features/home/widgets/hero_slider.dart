@@ -72,7 +72,7 @@ class HeroSlider extends StatelessWidget {
                   shadowColor: Colors.transparent,
                   shape: const StadiumBorder(),
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 40,
+                    horizontal: 25,
                     vertical: 16,
                   ),
                 ),

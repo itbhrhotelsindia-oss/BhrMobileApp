@@ -172,10 +172,12 @@ class _EventEnquiryFormState extends State<EventEnquiryForm> {
                               (e) => DropdownMenuItem(
                                 value: e,
                                 child: Text(
-                                  e,
+                                  e.length > 30 ? '${e.substring(0, 30)}...' : e,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
                                     color: Colors.black,
-                                    fontSize: 15,
+                                    fontSize: 14,
                                   ),
                                 ),
                               ),
@@ -202,7 +204,7 @@ class _EventEnquiryFormState extends State<EventEnquiryForm> {
                                   c.name,
                                   style: const TextStyle(
                                     color: Colors.black,
-                                    fontSize: 15,
+                                    fontSize: 14,
                                   ),
                                 ),
                               ),

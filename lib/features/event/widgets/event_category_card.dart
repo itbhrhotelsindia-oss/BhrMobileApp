@@ -41,7 +41,7 @@ class EventCategoryCard extends StatelessWidget {
               const BorderRadius.vertical(top: Radius.circular(14)),
               child: Image.network(
                 category.image,
-                height: 150,
+                height: 140,
                 width: double.infinity,
                 fit: BoxFit.cover,
               ),
@@ -52,7 +52,7 @@ class EventCategoryCard extends StatelessWidget {
                 category.title,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 15,
+                  fontSize: 14,
                   fontWeight: FontWeight.w600,
                   // color: selected ? Colors.white : Colors.black87,
                   color: Colors.black,
