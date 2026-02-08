@@ -14,6 +14,12 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
     on<UpdateDates>(_updateDates);
     on<UpdateGuests>(_updateGuests);
     on<CheckAvailability>(_checkAvailability);
+    on<SubmitBooking>(_submitBooking);
+    on<CreateRazorpayOrder>(_createRazorpayOrder);
+    on<ClearPaymentOrder>((event, emit) {
+      emit(state.copyWith(paymentOrder: null));
+    });
+
   }
 
   Future<void> _loadCities(
@@ -85,4 +91,55 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
       ));
     }
   }
+
+  Future<void> _submitBooking(
+      SubmitBooking event,
+      Emitter<BookingState> emit,
+      ) async {
+    emit(state.copyWith(
+      submittingBooking: true,
+      error: "",
+    ));
+
+    try {
+      final booking =
+      await repo.createBooking(event.payload);
+
+      emit(state.copyWith(
+        submittingBooking: false,
+        confirmedBooking: booking,
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        submittingBooking: false,
+        error: "Unable to create booking",
+      ));
+    }
+  }
+
+  Future<void> _createRazorpayOrder(
+      CreateRazorpayOrder event,
+      Emitter<BookingState> emit,
+      ) async {
+    emit(state.copyWith(
+      creatingPayment: true,
+      error: "",
+    ));
+
+    try {
+      final order =
+      await repo.createRazorpayOrder(event.bookingId);
+
+      emit(state.copyWith(
+        creatingPayment: false,
+        paymentOrder: order,
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        creatingPayment: false,
+        error: "PAYMENT_ORDER_FAILED",
+      ));
+    }
+  }
+
 }

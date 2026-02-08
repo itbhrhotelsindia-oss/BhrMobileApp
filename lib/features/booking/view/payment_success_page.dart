@@ -1,0 +1,193 @@
+import 'dart:async';
+import 'package:flutter/material.dart';
+import '../../../core/theme/app_colors.dart';
+
+class PaymentSuccessPage extends StatefulWidget {
+  const PaymentSuccessPage({super.key});
+
+  @override
+  State<PaymentSuccessPage> createState() => _PaymentSuccessPageState();
+}
+
+class _PaymentSuccessPageState extends State<PaymentSuccessPage> {
+  int seconds = 30;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (seconds == 0) {
+        _goHome();
+      } else {
+        setState(() => seconds--);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void _goHome() {
+    _timer?.cancel();
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      '/',
+          (route) => false,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFFF8FAFC), Color(0xFFE2E8F0)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Center(
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 460),
+            padding: const EdgeInsets.all(46),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(18),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 30,
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                /// ICON
+                Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.green.shade100,
+                        Colors.green.shade200,
+                      ],
+                    ),
+                  ),
+                  child: const Icon(
+                    Icons.check,
+                    color: Colors.green,
+                    size: 38,
+                  ),
+                ),
+
+                const SizedBox(height: 26),
+
+                /// TITLE
+                const Text(
+                  "Payment Successful",
+                  style: TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF0F172A),
+                  ),
+                ),
+
+                const SizedBox(height: 8),
+
+                const Text(
+                  "Your booking has been confirmed. We look forward to hosting you.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Color(0xFF64748B),
+                    height: 1.6,
+                  ),
+                ),
+
+                const SizedBox(height: 22),
+
+                /// INFO BOX
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF0FDF4),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: const Color(0xFFBBF7D0)),
+                  ),
+                  child: const Text(
+                    "A confirmation has been sent to your registered email address.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Color(0xFF166534),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 24),
+
+                /// SUPPORT
+                const Text(
+                  "Need help? Contact us at info@bhrhotelsindia.com\nor call +91 9211283334",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Color(0xFF475569),
+                    height: 1.6,
+                  ),
+                ),
+
+                const SizedBox(height: 18),
+                const Divider(),
+                const SizedBox(height: 20),
+
+                /// REDIRECT
+                Text(
+                  "Redirecting to home in $seconds s",
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: Color(0xFF475569),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                /// BUTTON
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _goHome,
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      backgroundColor: AppColors.lightGold,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text(
+                      "Go to Home",
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

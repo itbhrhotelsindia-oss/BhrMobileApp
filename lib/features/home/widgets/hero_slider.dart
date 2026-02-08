@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:bhrhotel/features/booking/widgets/booking_modal.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../booking/view/booking_search_page.dart';
 

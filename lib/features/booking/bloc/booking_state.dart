@@ -6,6 +6,8 @@ import '../../our_hotels/model/hotel_model.dart';
 class BookingState extends Equatable {
   final bool loading;
   final String error;
+  final bool creatingPayment;
+  final Map<String, dynamic>? paymentOrder;
 
   final List<CityModel> cities;
   final List<HotelModel> hotels;
@@ -25,8 +27,14 @@ class BookingState extends Equatable {
   final bool showAvailability;
   final dynamic availabilityData;
 
+  final bool submittingBooking;
+  final Map<String, dynamic>? confirmedBooking;
+
+
   const BookingState({
     this.loading = false,
+    this.submittingBooking = false,
+    this.confirmedBooking,
     this.error = "",
     this.cities = const [],
     this.hotels = const [],
@@ -41,10 +49,14 @@ class BookingState extends Equatable {
     this.rooms = 1,
     this.showAvailability = false,
     this.availabilityData,
+    this.creatingPayment = false,
+    this.paymentOrder,
   });
 
   BookingState copyWith({
     bool? loading,
+    bool? submittingBooking,
+    Map<String, dynamic>? confirmedBooking,
     String? error,
     List<CityModel>? cities,
     List<HotelModel>? hotels,
@@ -59,9 +71,13 @@ class BookingState extends Equatable {
     int? rooms,
     bool? showAvailability,
     dynamic availabilityData,
+    bool? creatingPayment,
+    Map<String, dynamic>? paymentOrder,
   }) {
     return BookingState(
       loading: loading ?? this.loading,
+      submittingBooking: submittingBooking ?? this.submittingBooking,
+      confirmedBooking: confirmedBooking ?? this.confirmedBooking,
       error: error ?? this.error,
       cities: cities ?? this.cities,
       hotels: hotels ?? this.hotels,
@@ -76,12 +92,16 @@ class BookingState extends Equatable {
       rooms: rooms ?? this.rooms,
       showAvailability: showAvailability ?? this.showAvailability,
       availabilityData: availabilityData ?? this.availabilityData,
+      creatingPayment: creatingPayment ?? this.creatingPayment,
+      paymentOrder: paymentOrder ?? this.paymentOrder,
     );
   }
 
   @override
   List<Object?> get props => [
     loading,
+    submittingBooking,
+    confirmedBooking,
     error,
     cities,
     hotels,
@@ -96,5 +116,7 @@ class BookingState extends Equatable {
     rooms,
     showAvailability,
     availabilityData,
+    creatingPayment,
+    paymentOrder,
   ];
 }

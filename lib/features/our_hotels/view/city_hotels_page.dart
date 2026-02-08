@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-import '../../booking/widgets/booking_modal.dart';
 import '../model/city_model.dart';
 import '../model/hotel_model.dart';
 import '../../hotel_detail/view/hotel_detail_page.dart';

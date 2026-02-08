@@ -22,44 +22,57 @@ class BookingSearchPage extends StatelessWidget {
         appBar: AppBar(title: const Text("Reservations")),
         body: BlocBuilder<BookingBloc, BookingState>(
           builder: (context, state) {
-            if (state.loading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            if (state.showAvailability && state.availabilityData != null) {
-              return Column(
-                children: [
-                  BookingForm(state: state),
-                  BookingAvailability(
-                    availability: state.availabilityData,
-                    search: {
-                      "hotel": state.selectedHotelId,
-                      "roomTypeName": state.selectedRoomType!.name,
-                      "checkIn": state.checkIn!.toString().split(" ")[0],
-                      "checkOut": state.checkOut!.toString().split(" ")[0],
-                      "adults": state.adults,
-                      "children": state.children,
-                      "roomsRequested": state.rooms,
-                      "pricePerNight": state.selectedRoomType!.basePrice,
-                    },
-                  ),
-                ],
-              );
-            }
-
             return SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  /// 🔹 BOOKING FORM (ALWAYS VISIBLE)
                   _bookingCard(context, state),
+
                   const SizedBox(height: 16),
-                  _infoCard(),
+
+                  /// 🔹 INFO CARD (ALWAYS VISIBLE)
+                  // _infoCard(),
+
+                  /// 🔹 LOADING
+                  if (state.loading) ...[
+                    const SizedBox(height: 24),
+                    const Center(child: CircularProgressIndicator()),
+                  ],
+
+                  /// 🔹 AVAILABLE ROOMS (LIKE REACT)
+                  if (state.showAvailability && state.availabilityData != null) ...[
+                    const SizedBox(height: 24),
+                    BookingAvailability(
+                      availability: state.availabilityData,
+                      search: {
+                        "hotel": state.selectedHotelId,
+                        "roomTypeName": state.selectedRoomType!.name,
+                        "checkIn": state.checkIn!.toString().split(" ")[0],
+                        "checkOut": state.checkOut!.toString().split(" ")[0],
+                        "adults": state.adults,
+                        "children": state.children,
+                        "roomsRequested": state.rooms,
+                        "pricePerNight": state.selectedRoomType!.basePrice,
+                      },
+                    ),
+                  ],
+
+                  /// 🔹 ERROR
+                  if (state.error.isNotEmpty) ...[
+                    const SizedBox(height: 12),
+                    Text(
+                      state.error,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                  ],
                 ],
               ),
             );
           },
         ),
+
       ),
     );
   }

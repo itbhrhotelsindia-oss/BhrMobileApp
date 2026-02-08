@@ -11,7 +11,6 @@ import '../widgets/brand_banner.dart';
 import '../widgets/brands_section.dart';
 import '../widgets/events_section.dart';
 import '../widgets/footer.dart';
-import 'package:bhrhotel/features/booking/widgets/booking_modal.dart';
 import 'package:bhrhotel/core/widgets/app_drawer.dart';
 
 class HomePage extends StatelessWidget {

@@ -47,3 +47,17 @@ class UpdateGuests extends BookingEvent {
 }
 
 class CheckAvailability extends BookingEvent {}
+
+class SubmitBooking extends BookingEvent {
+  final Map<String, dynamic> payload;
+  SubmitBooking(this.payload);
+}
+
+class BookingSubmitted extends BookingEvent {}
+
+class CreateRazorpayOrder extends BookingEvent {
+  final String bookingId;
+  CreateRazorpayOrder(this.bookingId);
+}
+
+class ClearPaymentOrder extends BookingEvent {}
