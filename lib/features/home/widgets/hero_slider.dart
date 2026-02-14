@@ -7,11 +7,7 @@ class HeroSlider extends StatelessWidget {
   final List<String> images;
   final double height;
 
-  const HeroSlider({
-    super.key,
-    required this.images,
-    this.height = 320,
-  });
+  const HeroSlider({super.key, required this.images, this.height = 320});
 
   @override
   Widget build(BuildContext context) {
@@ -20,15 +16,10 @@ class HeroSlider extends StatelessWidget {
       child: Stack(
         children: [
           /// IMAGE SLIDER
-          AutoSlider(
-            images: images,
-            height: 320,
-          ),
+          AutoSlider(images: images, height: 320),
 
           /// DARK OVERLAY
-          Container(
-            color: Colors.black.withOpacity(0.25),
-          ),
+          Container(color: Colors.black.withOpacity(0.25)),
 
           // /// 🔹 TOP ICONS
           // Positioned(
@@ -61,17 +52,15 @@ class HeroSlider extends StatelessWidget {
             child: Container(
               decoration: const BoxDecoration(
                 gradient: AppColors.goldBtnGradient,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(30),
-                ),
+                borderRadius: BorderRadius.all(Radius.circular(30)),
               ),
               child: ElevatedButton(
-                onPressed: () { Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => BookingSearchPage(),
-                  ),
-                );},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => BookingSearchPage()),
+                  );
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.transparent,
                   shadowColor: Colors.transparent,
@@ -89,8 +78,7 @@ class HeroSlider extends StatelessWidget {
                   ),
                 ),
               ),
-            )
-            ,
+            ),
           ),
         ],
       ),
@@ -98,10 +86,7 @@ class HeroSlider extends StatelessWidget {
   }
 
   /// reusable round icon
-  Widget _circleIcon({
-    required IconData icon,
-    required VoidCallback onTap,
-  }) {
+  Widget _circleIcon({required IconData icon, required VoidCallback onTap}) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(40),
@@ -112,11 +97,7 @@ class HeroSlider extends StatelessWidget {
           color: Colors.black.withOpacity(0.6),
           shape: BoxShape.circle,
         ),
-        child: Icon(
-          icon,
-          color: Colors.white,
-          size: 22,
-        ),
+        child: Icon(icon, color: Colors.white, size: 22),
       ),
     );
   }
@@ -126,11 +107,7 @@ class AutoSlider extends StatefulWidget {
   final List<String> images;
   final double height;
 
-  const AutoSlider({
-    super.key,
-    required this.images,
-    this.height = 320,
-  });
+  const AutoSlider({super.key, required this.images, this.height = 320});
 
   @override
   State<AutoSlider> createState() => _AutoSliderState();
@@ -185,10 +162,8 @@ class _AutoSliderState extends State<AutoSlider> {
             fit: BoxFit.cover,
             width: double.infinity,
             memCacheWidth: 1200,
-            placeholder: (_, __) =>
-                Container(color: Colors.black12),
-            errorWidget: (_, __, ___) =>
-            const Icon(Icons.broken_image),
+            placeholder: (_, __) => Container(color: Colors.black12),
+            errorWidget: (_, __, ___) => const Icon(Icons.broken_image),
           );
         },
       ),

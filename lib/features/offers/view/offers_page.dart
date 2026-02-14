@@ -9,6 +9,7 @@ import '../repository/offers_repository.dart';
 import 'package:bhrhotel/core/api_client.dart';
 import '../../../core/theme/app_colors.dart';
 import 'package:bhrhotel/app/app_shell.dart';
+import '../../booking/view/booking_search_page.dart';
 
 class OffersPage extends StatelessWidget {
   const OffersPage({super.key});
@@ -154,9 +155,14 @@ class _OffersGrid extends StatelessWidget {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.darkGold1,
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => BookingSearchPage()),
+                            );
+                          },
                           child: Text(
-                            offer.loginBtn,
+                            "BOOK NOW",
                             style: TextStyle(color: Colors.white),
                           ),
                         ),

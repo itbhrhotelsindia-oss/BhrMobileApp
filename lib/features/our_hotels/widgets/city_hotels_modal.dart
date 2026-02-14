@@ -5,6 +5,7 @@ import '../model/city_model.dart';
 import '../model/hotel_model.dart';
 import '../../hotel_detail/view/hotel_detail_page.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../booking/view/booking_search_page.dart';
 
 class CityHotelsModal {
   static void open(BuildContext context, CityModel city) {
@@ -187,8 +188,10 @@ class _HotelCard extends StatelessWidget {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.pop(context);
-                            // BookingModal.open(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => BookingSearchPage()),
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.lightBlue2,

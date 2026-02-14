@@ -8,9 +8,13 @@ import '../../booking/widgets/booking_availability.dart';
 import '../../booking/widgets/booking_form.dart';
 import '../../booking/repository/booking_repository.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../our_hotels/model/city_model.dart';
 
 class BookingSearchPage extends StatelessWidget {
-  const BookingSearchPage({super.key});
+  final CityModel? cityModel;
+  final String? hotelId;
+
+  const BookingSearchPage({super.key, this.cityModel, this.hotelId});
 
   @override
   Widget build(BuildContext context) {
@@ -19,67 +23,91 @@ class BookingSearchPage extends StatelessWidget {
           BookingBloc(context.read<BookingRepository>())..add(LoadCities()),
       child: Scaffold(
         appBar: AppBar(title: const Text("Reservations")),
-        body: BlocBuilder<BookingBloc, BookingState>(
-          builder: (context, state) {
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  /// 🔹 BOOKING FORM (ALWAYS VISIBLE)
-                  _bookingCard(context, state),
+        body: BlocListener<BookingBloc, BookingState>(
+          listenWhen: (previous, current) =>
+              previous.cities != current.cities ||
+              previous.hotels != current.hotels,
+          listener: (context, state) {
+            /// 🔹 Auto Select City
+            if (cityModel != null &&
+                state.cities.isNotEmpty &&
+                state.selectedCity.isEmpty) {
+              context.read<BookingBloc>().add(SelectCity(cityModel!.name));
+            }
 
-                  const SizedBox(height: 16),
+            /// 🔹 Auto Select Hotel (FIRST HOTEL)
+            if (state.selectedCity.isNotEmpty &&
+                state.hotels.isNotEmpty &&
+                state.selectedHotelId.isEmpty) {
+              final hotelToSelect = hotelId ??
+                  state.hotels.first.hotelId;
+              context.read<BookingBloc>().add(
+                SelectHotel(hotelToSelect),
+              );
+            }
+          },
+          child: BlocBuilder<BookingBloc, BookingState>(
+            builder: (context, state) {
+              return SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    /// 🔹 BOOKING FORM
+                    _bookingCard(context, state),
 
-                  /// 🔹 INFO CARD (ALWAYS VISIBLE)
-                  // _infoCard(),
+                    const SizedBox(height: 16),
 
-                  /// 🔹 LOADING
-                  if (state.loading) ...[
-                    const SizedBox(height: 24),
-                    const Center(child: CircularProgressIndicator()),
-                  ],
+                    /// 🔹 LOADING
+                    if (state.loading) ...[
+                      const SizedBox(height: 24),
+                      const Center(child: CircularProgressIndicator()),
+                    ],
 
-                  /// 🔹 AVAILABLE ROOMS (LIKE REACT)
-                  if (state.showAvailability &&
-                      state.availabilityData != null) ...[
-                    const SizedBox(height: 24),
+                    /// 🔹 AVAILABLE ROOMS
+                    if (state.showAvailability &&
+                        state.availabilityData != null) ...[
+                      const SizedBox(height: 24),
 
-                    if (state.availabilityData["available"] == false) ...[
+                      if (state.availabilityData["available"] == false) ...[
+                        const SizedBox(height: 12),
+                        Text(
+                          state.availabilityData["message"] ??
+                              "Rooms not available",
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                      ] else ...[
+                        BookingAvailability(
+                          availability: state.availabilityData,
+                          search: {
+                            "hotel": state.selectedHotelId,
+                            "roomTypeName": state.selectedRoomType!.name,
+                            "checkIn": state.checkIn!.toString().split(" ")[0],
+                            "checkOut": state.checkOut!.toString().split(
+                              " ",
+                            )[0],
+                            "adults": state.adults,
+                            "children": state.children,
+                            "roomsRequested": state.rooms,
+                            "pricePerNight": state.selectedRoomType!.basePrice,
+                          },
+                        ),
+                      ],
+                    ],
+
+                    /// 🔹 ERROR
+                    if (state.error.isNotEmpty) ...[
                       const SizedBox(height: 12),
                       Text(
-                        state.availabilityData["message"] ?? "Rooms not available",
+                        state.error,
                         style: const TextStyle(color: Colors.red),
-                      ),
-                    ] else ...[
-                      BookingAvailability(
-                        availability: state.availabilityData,
-                        search: {
-                          "hotel": state.selectedHotelId,
-                          "roomTypeName": state.selectedRoomType!.name,
-                          "checkIn": state.checkIn!.toString().split(" ")[0],
-                          "checkOut": state.checkOut!.toString().split(" ")[0],
-                          "adults": state.adults,
-                          "children": state.children,
-                          "roomsRequested": state.rooms,
-                          "pricePerNight": state.selectedRoomType!.basePrice,
-                        },
                       ),
                     ],
                   ],
-
-                  /// 🔹 ERROR
-                  if (state.error.isNotEmpty) ...[
-                    const SizedBox(height: 12),
-                    Text(
-                      state.error,
-                      style: const TextStyle(color: Colors.red),
-                    ),
-                  ],
-                ],
-              ),
-            );
-          },
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
@@ -87,7 +115,6 @@ class BookingSearchPage extends StatelessWidget {
 }
 
 Widget _bookingCard(BuildContext context, BookingState state) {
-
   final roomSelected = state.selectedRoomType != null;
   return Card(
     elevation: 2,
@@ -336,7 +363,11 @@ Widget _bookingCard(BuildContext context, BookingState state) {
                   context.read<BookingBloc>().add(CheckAvailability()),
               child: const Text(
                 "Check Availability",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
             ),
           ),

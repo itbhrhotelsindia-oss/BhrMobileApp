@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-import '../model/city_model.dart';
+import '../../our_hotels/model/city_model.dart';
 import '../model/hotel_model.dart';
 import '../../hotel_detail/view/hotel_detail_page.dart';
 import '../view/city_hotels_page.dart';
 import '../../../core/theme/app_colors.dart';
 import 'package:bhrhotel/app/app_shell.dart';
+import '../../booking/view/booking_search_page.dart';
 
 class CityHotelsPage extends StatelessWidget {
   final CityModel city;
 
-  const CityHotelsPage({
-    super.key,
-    required this.city,
-  });
+  const CityHotelsPage({super.key, required this.city});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +30,7 @@ class CityHotelsPage extends StatelessWidget {
               MaterialPageRoute(
                 builder: (_) => const AppShell(), // ✅ home page
               ),
-                  (route) => false, // removes all previous routes
+              (route) => false, // removes all previous routes
             );
           },
         ),
@@ -50,18 +48,18 @@ class CityHotelsPage extends StatelessWidget {
         padding: const EdgeInsets.all(24),
         itemCount: city.hotels.length,
         itemBuilder: (_, i) {
-          return HotelCard(hotel: city.hotels[i]);
+          return HotelCard(cityModel: city, hotel: city.hotels[i]);
         },
       ),
     );
   }
 }
 
-
 class HotelCard extends StatelessWidget {
+  final CityModel cityModel;
   final HotelModel hotel;
 
-  const HotelCard({required this.hotel});
+  const HotelCard({required this.cityModel, required this.hotel});
 
   @override
   Widget build(BuildContext context) {
@@ -70,10 +68,7 @@ class HotelCard extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 12,
-          ),
+          BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 12),
         ],
       ),
       child: ClipRRect(
@@ -103,7 +98,6 @@ class HotelCard extends StatelessWidget {
                     ),
                   ),
 
-
                   const SizedBox(height: 10),
 
                   /// ⭐ SERVICES BADGES
@@ -116,6 +110,7 @@ class HotelCard extends StatelessWidget {
                   ),
 
                   const SizedBox(height: 14),
+
                   // if (hotel.description != null)
                   //   Padding(
                   //     padding: const EdgeInsets.only(top: 6),
@@ -128,7 +123,6 @@ class HotelCard extends StatelessWidget {
                   //       ),
                   //     ),
                   //   ),
-
                   const SizedBox(height: 12),
 
                   Row(
@@ -142,9 +136,8 @@ class HotelCard extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => HotelDetailPage(
-                                  hotelId: hotel.hotelId,
-                                ),
+                                builder: (_) =>
+                                    HotelDetailPage(hotelId: hotel.hotelId),
                               ),
                             );
                           },
@@ -155,8 +148,8 @@ class HotelCard extends StatelessWidget {
                           child: const Text(
                             "VISIT HOTEL",
                             style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white70
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white70,
                             ),
                           ),
                         ),
@@ -168,8 +161,12 @@ class HotelCard extends StatelessWidget {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.pop(context);
-                            // BookingModal.open(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => BookingSearchPage(cityModel: cityModel, hotelId: hotel.hotelId),
+                              ),
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.lightBlue2,
@@ -177,13 +174,15 @@ class HotelCard extends StatelessWidget {
                           ),
                           child: const Text(
                             "BOOK NOW",
-                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white70,
+                            ),
                           ),
                         ),
                       ),
                     ],
                   ),
-
                 ],
               ),
             ),
@@ -194,7 +193,6 @@ class HotelCard extends StatelessWidget {
   }
 }
 
-
 class _ServiceBadge extends StatelessWidget {
   final String service;
 
@@ -203,23 +201,15 @@ class _ServiceBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 12,
-        vertical: 6,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
         color: AppColors.darkGold1.withOpacity(0.15),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: AppColors.darkGold2.withOpacity(0.4),
-        ),
+        border: Border.all(color: AppColors.darkGold2.withOpacity(0.4)),
       ),
       child: Text(
         "${_icon()} $service",
-        style: const TextStyle(
-          fontSize: 13,
-          fontWeight: FontWeight.w600,
-        ),
+        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
       ),
     );
   }
