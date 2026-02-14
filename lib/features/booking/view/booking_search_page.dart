@@ -44,19 +44,28 @@ class BookingSearchPage extends StatelessWidget {
                   if (state.showAvailability &&
                       state.availabilityData != null) ...[
                     const SizedBox(height: 24),
-                    BookingAvailability(
-                      availability: state.availabilityData,
-                      search: {
-                        "hotel": state.selectedHotelId,
-                        "roomTypeName": state.selectedRoomType!.name,
-                        "checkIn": state.checkIn!.toString().split(" ")[0],
-                        "checkOut": state.checkOut!.toString().split(" ")[0],
-                        "adults": state.adults,
-                        "children": state.children,
-                        "roomsRequested": state.rooms,
-                        "pricePerNight": state.selectedRoomType!.basePrice,
-                      },
-                    ),
+
+                    if (state.availabilityData["available"] == false) ...[
+                      const SizedBox(height: 12),
+                      Text(
+                        state.availabilityData["message"] ?? "Rooms not available",
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                    ] else ...[
+                      BookingAvailability(
+                        availability: state.availabilityData,
+                        search: {
+                          "hotel": state.selectedHotelId,
+                          "roomTypeName": state.selectedRoomType!.name,
+                          "checkIn": state.checkIn!.toString().split(" ")[0],
+                          "checkOut": state.checkOut!.toString().split(" ")[0],
+                          "adults": state.adults,
+                          "children": state.children,
+                          "roomsRequested": state.rooms,
+                          "pricePerNight": state.selectedRoomType!.basePrice,
+                        },
+                      ),
+                    ],
                   ],
 
                   /// 🔹 ERROR

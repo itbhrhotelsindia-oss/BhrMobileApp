@@ -61,3 +61,6 @@ class CreateRazorpayOrder extends BookingEvent {
 }
 
 class ClearPaymentOrder extends BookingEvent {}
+
+class ResetAvailability extends BookingEvent {}
+

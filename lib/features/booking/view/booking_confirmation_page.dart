@@ -25,8 +25,7 @@ class BookingConfirmationPage extends StatefulWidget {
       _BookingConfirmationPageState();
 }
 
-class _BookingConfirmationPageState
-    extends State<BookingConfirmationPage> {
+class _BookingConfirmationPageState extends State<BookingConfirmationPage> {
   late Razorpay _razorpay;
 
   @override
@@ -34,15 +33,9 @@ class _BookingConfirmationPageState
     super.initState();
     _razorpay = Razorpay();
 
-    _razorpay.on(
-      Razorpay.EVENT_PAYMENT_SUCCESS,
-      _onPaymentSuccess,
-    );
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _onPaymentSuccess);
 
-    _razorpay.on(
-      Razorpay.EVENT_PAYMENT_ERROR,
-      _onPaymentFailure,
-    );
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _onPaymentFailure);
   }
 
   @override
@@ -65,24 +58,18 @@ class _BookingConfirmationPageState
         'email': widget.booking['guestEmail'] ?? "guest@bhrhotelsindia.com",
         'contact': widget.booking['guestPhone'] ?? "9999999999",
       },
-      'theme': {
-        'color': '#6b2d2d',
-      },
+      'theme': {'color': '#6b2d2d'},
     };
 
     debugPrint("Opening Razorpay: $options");
     _razorpay.open(options);
   }
 
-
-
   /// ✅ Payment success
   void _onPaymentSuccess(PaymentSuccessResponse response) {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(
-        builder: (_) => const PaymentSuccessPage(),
-      ),
+      MaterialPageRoute(builder: (_) => const PaymentSuccessPage()),
     );
   }
 
@@ -90,9 +77,7 @@ class _BookingConfirmationPageState
   void _onPaymentFailure(PaymentFailureResponse response) {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(
-        builder: (_) => const PaymentFailurePage(),
-      ),
+      MaterialPageRoute(builder: (_) => const PaymentFailurePage()),
     );
   }
 
@@ -102,9 +87,8 @@ class _BookingConfirmationPageState
     final detail = widget.bookingDetail;
 
     return BlocListener<BookingBloc, BookingState>(
-      listenWhen: (prev, curr) =>
-      prev.paymentOrder != curr.paymentOrder,
-          listener: (context, state) {
+      listenWhen: (prev, curr) => prev.paymentOrder != curr.paymentOrder,
+      listener: (context, state) {
         /// Razorpay order created → open checkout
         if (state.paymentOrder != null) {
           _openRazorpay(state.paymentOrder!);
@@ -116,129 +100,133 @@ class _BookingConfirmationPageState
         if (state.error == "PAYMENT_ORDER_FAILED") {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(
-              builder: (_) => const PaymentFailurePage(),
-            ),
+            MaterialPageRoute(builder: (_) => const PaymentFailurePage()),
           );
         }
       },
-      child: Scaffold(
-        appBar: AppBar(title: const Text("Booking Confirmation")),
-        body: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              /// SUCCESS BOX
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.green.shade50,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Column(
-                  children: [
-                    Text(
-                      "🎉 Booking Created Successfully",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      "Your booking is currently PENDING.\nPlease complete payment to confirm.",
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 24),
-
-              /// DETAILS
-              _detail("Booking ID", booking['bookingId']),
-              _detail("Hotel", booking['hotelId']),
-              _detail("Room Type", detail['roomTypeName']),
-              _detail("Check-In", detail['checkIn']),
-              _detail("Check-Out", detail['checkOut']),
-              _detail("Rooms", detail['roomsRequested']),
-
-              const Divider(height: 32),
-
-              _detail(
-                "Total Amount",
-                "₹${booking['totalAmount']}",
-                bold: true,
-              ),
-
-              const Spacer(),
-
-              /// PAY ONLINE
-              BlocBuilder<BookingBloc, BookingState>(
-                builder: (context, state) {
-                  return ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.darkGold1,
-                      padding:
-                      const EdgeInsets.symmetric(vertical: 16),
-                    ),
-                    onPressed: state.creatingPayment
-                        ? null
-                        : () {
-                      context.read<BookingBloc>().add(
-                        CreateRazorpayOrder(
-                          booking['bookingId'],
+      child: WillPopScope(
+        onWillPop: () async {
+          context.read<BookingBloc>().add(ResetAvailability());
+          return true;
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text("Booking Confirmation"),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                context.read<BookingBloc>().add(ResetAvailability());
+                Navigator.pop(context);
+              },
+            ),
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                /// SUCCESS BOX
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.green.shade50,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Column(
+                    children: [
+                      Text(
+                        "🎉 Booking Created Successfully",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
-                      );
-                    },
-                    child: state.creatingPayment
-                        ? const CircularProgressIndicator(
-                      color: Colors.white,
-                    )
-                        : Text(
-                      "Pay ₹${booking['totalAmount']} Here",
-                      style:
-                      const TextStyle(fontSize: 16),
-                    ),
-                  );
-                },
-              ),
-
-              const SizedBox(height: 14),
-
-              /// PAY AT HOTEL
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  padding:
-                  const EdgeInsets.symmetric(vertical: 16),
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => PaymentAtHotelPage(
-                        amount: booking['totalAmount'],
                       ),
-                    ),
-                  );
-                },
-                child: Text(
-                  "Pay ₹${booking['totalAmount']} At Hotel",
-                  style: const TextStyle(fontSize: 16),
+                      SizedBox(height: 8),
+                      Text(
+                        "Your booking is currently PENDING.\nPlease complete payment to confirm.",
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
 
-              const SizedBox(height: 12),
-            ],
+                const SizedBox(height: 24),
+
+                /// DETAILS
+                _detail("Booking ID", booking['bookingId']),
+                _detail("Hotel", booking['hotelId']),
+                _detail("Room Type", detail['roomTypeName']),
+                _detail("Check-In", detail['checkIn']),
+                _detail("Check-Out", detail['checkOut']),
+                _detail("Rooms", detail['roomsRequested']),
+
+                const Divider(height: 32),
+
+                _detail(
+                  "Total Amount",
+                  "₹${booking['totalAmount']}",
+                  bold: true,
+                ),
+
+                const Spacer(),
+
+                /// PAY ONLINE
+                BlocBuilder<BookingBloc, BookingState>(
+                  builder: (context, state) {
+                    return ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.darkGold1,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                      onPressed: state.creatingPayment
+                          ? null
+                          : () {
+                              context.read<BookingBloc>().add(
+                                CreateRazorpayOrder(booking['bookingId']),
+                              );
+                            },
+                      child: state.creatingPayment
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : Text(
+                              "Pay ₹${booking['totalAmount']} Here",
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                    );
+                  },
+                ),
+
+                const SizedBox(height: 14),
+
+                /// PAY AT HOTEL
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            PaymentAtHotelPage(amount: booking['totalAmount']),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    "Pay ₹${booking['totalAmount']} At Hotel",
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ),
+
+                const SizedBox(height: 12),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _detail(String label, dynamic value,
-      {bool bold = false}) {
+  Widget _detail(String label, dynamic value, {bool bold = false}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
@@ -247,8 +235,7 @@ class _BookingConfirmationPageState
           Text(
             value?.toString() ?? "-",
             style: TextStyle(
-              fontWeight:
-              bold ? FontWeight.bold : FontWeight.w500,
+              fontWeight: bold ? FontWeight.bold : FontWeight.w500,
             ),
           ),
         ],

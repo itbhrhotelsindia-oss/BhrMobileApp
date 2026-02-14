@@ -19,7 +19,25 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
     on<ClearPaymentOrder>((event, emit) {
       emit(state.copyWith(paymentOrder: null));
     });
+    on<ResetAvailability>((event, emit) {
+      emit(state.copyWith(
+        showAvailability: false,
+        availabilityData: null,
+        confirmedBooking: null,
+        error: "",
+      ));
+    });
+    on<BookingSubmitted>((event, emit) {
+      emit(state.copyWith(confirmedBooking: null));
+    });
 
+  }
+
+  BookingState _resetAvailability(BookingState current) {
+    return current.copyWith(
+      showAvailability: false,
+      availabilityData: null,
+    );
   }
 
   Future<void> _loadCities(
@@ -33,11 +51,14 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
     final city = state.cities.firstWhere(
           (c) => c.name == event.city,
     );
-    emit(state.copyWith(
-      selectedCity: event.city,
-      hotels: city.hotels,
-      selectedHotelId: "",
-      roomTypes: [],
+    emit(_resetAvailability(
+      state.copyWith(
+        selectedCity: event.city,
+        hotels: city.hotels,
+        selectedHotelId: "",
+        roomTypes: [],
+        selectedRoomType: null,
+      ),
     ));
   }
 
@@ -45,10 +66,13 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
       SelectHotel event, Emitter<BookingState> emit) async {
     emit(state.copyWith(loading: true));
     final roomTypes = await repo.getRoomTypes(event.hotelId);
-    emit(state.copyWith(
-      loading: false,
-      selectedHotelId: event.hotelId,
-      roomTypes: roomTypes,
+    emit(_resetAvailability(
+      state.copyWith(
+        loading: false,
+        selectedHotelId: event.hotelId,
+        roomTypes: roomTypes,
+        selectedRoomType: null,
+      ),
     ));
   }
 
@@ -59,21 +83,23 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
     final rt =
     state.roomTypes.firstWhere((r) => r.id == event.roomTypeId);
 
-    emit(state.copyWith(
-      selectedRoomType: rt,
-
-      // ✅ Reset counters
-      adults: 1,
-      children: 0,
-      rooms: 1,
+    emit(_resetAvailability(
+      state.copyWith(
+        selectedRoomType: rt,
+        adults: 1,
+        children: 0,
+        rooms: 1,
+      ),
     ));
   }
 
 
   void _updateDates(UpdateDates event, Emitter<BookingState> emit) {
-    emit(state.copyWith(
-      checkIn: event.checkIn,
-      checkOut: event.checkOut,
+    emit(_resetAvailability(
+      state.copyWith(
+        checkIn: event.checkIn,
+        checkOut: event.checkOut,
+      ),
     ));
   }
 
@@ -93,10 +119,12 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
       if (children > maxChildren) children = maxChildren;
     }
 
-    emit(state.copyWith(
-      adults: adults,
-      children: children,
-      rooms: rooms,
+    emit(_resetAvailability(
+      state.copyWith(
+        adults: adults,
+        children: children,
+        rooms: rooms,
+      ),
     ));
   }
 

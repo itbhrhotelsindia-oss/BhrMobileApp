@@ -35,10 +35,17 @@ class _BookingAvailabilityState extends State<BookingAvailability> {
   void initState() {
     super.initState();
 
-    /// Same as React useEffect
-    selectedPricing = widget.availability["pricingOptions"][0];
-    selectedTab = selectedPricing["payMode"];
+    final options = widget.availability["pricingOptions"];
+
+    if (options != null && options is List && options.isNotEmpty) {
+      selectedPricing = options.first;
+      selectedTab = selectedPricing["payMode"];
+    } else {
+      selectedPricing = {};
+      selectedTab = "PAY_NOW";
+    }
   }
+
 
   bool _validate() {
     if (_nameController.text.trim().isEmpty ||
@@ -89,7 +96,8 @@ class _BookingAvailabilityState extends State<BookingAvailability> {
 
   @override
   Widget build(BuildContext context) {
-    final allOptions = widget.availability["pricingOptions"] as List;
+    final allOptions =
+        (widget.availability["pricingOptions"] as List?) ?? [];
 
     final payNowOptions = allOptions
         .where((p) => p["payMode"] == "PAY_NOW")
@@ -106,6 +114,8 @@ class _BookingAvailabilityState extends State<BookingAvailability> {
     final pricingOptions = widget.availability["pricingOptions"] as List;
 
     return BlocListener<BookingBloc, BookingState>(
+      listenWhen: (previous, current) =>
+      previous.confirmedBooking != current.confirmedBooking,
       listener: (context, state) {
         if (state.confirmedBooking != null) {
           Navigator.push(
@@ -117,6 +127,7 @@ class _BookingAvailabilityState extends State<BookingAvailability> {
               ),
             ),
           );
+          context.read<BookingBloc>().add(BookingSubmitted());
         }
       },
       child: BlocBuilder<BookingBloc, BookingState>(
