@@ -8,9 +8,6 @@ import 'features/home/bloc/home_bloc.dart';
 import 'features/home/bloc/home_event.dart';
 import 'features/home/repository/home_repository.dart';
 
-// import 'features/header/bloc/header_bloc.dart';
-// import 'features/header/bloc/header_event.dart';
-// import 'features/header/repository/header_repository.dart';
 import 'features/our_hotels/bloc/our_hotels_bloc.dart';
 import 'features/our_hotels/bloc/our_hotels_event.dart';
 import 'features/our_hotels/repository/our_hotels_repository.dart';
