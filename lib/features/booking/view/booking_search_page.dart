@@ -7,7 +7,7 @@ import '../../booking/bloc/booking_event.dart';
 import '../../booking/widgets/booking_availability.dart';
 import '../../booking/widgets/booking_form.dart';
 import '../../booking/repository/booking_repository.dart';
-
+import '../../../core/theme/app_colors.dart';
 
 class BookingSearchPage extends StatelessWidget {
   const BookingSearchPage({super.key});
@@ -15,9 +15,8 @@ class BookingSearchPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => BookingBloc(
-        context.read<BookingRepository>(),
-      )..add(LoadCities()),
+      create: (context) =>
+          BookingBloc(context.read<BookingRepository>())..add(LoadCities()),
       child: Scaffold(
         appBar: AppBar(title: const Text("Reservations")),
         body: BlocBuilder<BookingBloc, BookingState>(
@@ -42,7 +41,8 @@ class BookingSearchPage extends StatelessWidget {
                   ],
 
                   /// 🔹 AVAILABLE ROOMS (LIKE REACT)
-                  if (state.showAvailability && state.availabilityData != null) ...[
+                  if (state.showAvailability &&
+                      state.availabilityData != null) ...[
                     const SizedBox(height: 24),
                     BookingAvailability(
                       availability: state.availabilityData,
@@ -72,18 +72,17 @@ class BookingSearchPage extends StatelessWidget {
             );
           },
         ),
-
       ),
     );
   }
 }
 
 Widget _bookingCard(BuildContext context, BookingState state) {
+
+  final roomSelected = state.selectedRoomType != null;
   return Card(
     elevation: 2,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(12),
-    ),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     child: Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -92,51 +91,72 @@ Widget _bookingCard(BuildContext context, BookingState state) {
             label: "Place",
             value: state.selectedCity.isEmpty ? null : state.selectedCity,
             items: state.cities.map((c) => c.name).toList(),
-            onChanged: (v) =>
-                context.read<BookingBloc>().add(SelectCity(v)),
+            onChanged: (v) => context.read<BookingBloc>().add(SelectCity(v)),
           ),
           const SizedBox(height: 12),
 
           DropdownButtonFormField<String>(
-            value: state.selectedHotelId.isEmpty
-                ? null
-                : state.selectedHotelId,
+            value: state.selectedHotelId.isEmpty ? null : state.selectedHotelId,
             decoration: const InputDecoration(labelText: "Hotel"),
             items: state.hotels
                 .map(
-                  (h) => DropdownMenuItem(
-                value: h.hotelId,
-                child: Text(h.name),
-              ),
-            )
+                  (h) =>
+                      DropdownMenuItem(value: h.hotelId, child: Text(h.name)),
+                )
                 .toList(),
             onChanged: state.hotels.isEmpty
                 ? null // disabled until place selected
                 : (v) {
-              if (v != null) {
-                context.read<BookingBloc>().add(SelectHotel(v));
-              }
+                    if (v != null) {
+                      context.read<BookingBloc>().add(SelectHotel(v));
+                    }
+                  },
+          ),
+
+          const SizedBox(height: 12),
+
+          // _dateField(
+          //   context,
+          //   label: "From",
+          //   date: state.checkIn,
+          //   onSelect: (d) =>
+          //       context.read<BookingBloc>().add(UpdateDates(d, state.checkOut ?? d)),
+          // ),
+          _dateField(
+            context,
+            label: "From",
+            date: state.checkIn ?? _today(),
+            firstDate: _today(),
+            onSelect: (d) {
+              final checkIn = DateTime(d.year, d.month, d.day);
+              final checkOut = checkIn.add(const Duration(days: 1));
+
+              context.read<BookingBloc>().add(UpdateDates(checkIn, checkOut));
             },
           ),
 
           const SizedBox(height: 12),
 
-          _dateField(
-            context,
-            label: "From",
-            date: state.checkIn,
-            onSelect: (d) =>
-                context.read<BookingBloc>().add(UpdateDates(d, state.checkOut ?? d)),
-          ),
-
-          const SizedBox(height: 12),
-
+          // _dateField(
+          //   context,
+          //   label: "To",
+          //   date: state.checkOut,
+          //   onSelect: (d) =>
+          //       context.read<BookingBloc>().add(UpdateDates(state.checkIn ?? d, d)),
+          // ),
           _dateField(
             context,
             label: "To",
-            date: state.checkOut,
-            onSelect: (d) =>
-                context.read<BookingBloc>().add(UpdateDates(state.checkIn ?? d, d)),
+            date: state.checkOut ?? _tomorrow(),
+            firstDate: (state.checkIn ?? _today()).add(const Duration(days: 1)),
+            onSelect: (d) {
+              context.read<BookingBloc>().add(
+                UpdateDates(
+                  state.checkIn ?? _today(),
+                  DateTime(d.year, d.month, d.day),
+                ),
+              );
+            },
           ),
 
           const SizedBox(height: 12),
@@ -147,40 +167,147 @@ Widget _bookingCard(BuildContext context, BookingState state) {
             items: state.roomTypes
                 .map(
                   (r) => DropdownMenuItem(
-                value: r.id,
-                child: Text("${r.name} (₹${r.basePrice})"),
-              ),
-            )
+                    value: r.id,
+                    child: Text(
+                      // "${r.name} (₹${r.basePrice})",
+                      // "${r.name} (₹${r.basePrice})".length > 30 ? '${"${r.name} (₹${r.basePrice})".substring(0, 30)}...' : "${r.name} (₹${r.basePrice})",
+                      "${r.name} ".length > 30
+                          ? '${"${r.name} ".substring(0, 30)}...'
+                          : "${r.name}",
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(color: Colors.black, fontSize: 14),
+                    ),
+                  ),
+                )
                 .toList(),
             onChanged: state.roomTypes.isEmpty
                 ? null
                 : (v) {
-              if (v != null) {
-                context.read<BookingBloc>().add(SelectRoomType(v));
-              }
-            },
+                    if (v != null) {
+                      context.read<BookingBloc>().add(SelectRoomType(v));
+                    }
+                  },
           ),
 
+          if (state.selectedRoomType != null) ...[
+            const SizedBox(height: 16),
 
-          const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.darkGold1,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Row(
+                children: [
+                  const Text(
+                    "Price:",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    "₹${state.selectedRoomType!.basePrice} / night",
+                    style: const TextStyle(fontSize: 14, color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 8),
+
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.darkGold1,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Row(
+                children: [
+                  const Text(
+                    "Max Guests:",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "${state.selectedRoomType!.maxAdults} adults"
+                          "${state.selectedRoomType!.maxChildren > 0 ? " and ${state.selectedRoomType!.maxChildren} children" : ""}",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const Text(
+                          "per room",
+                          style: TextStyle(fontSize: 12, color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+
+          const SizedBox(height: 20),
 
           Row(
             children: [
-              _counter("Adults", state.adults, (v) {
-                context.read<BookingBloc>().add(
-                  UpdateGuests(v, state.children, state.rooms),
-                );
-              }),
-              _counter("Children", state.children, (v) {
-                context.read<BookingBloc>().add(
-                  UpdateGuests(state.adults, v, state.rooms),
-                );
-              }),
-              _counter("Rooms", state.rooms, (v) {
-                context.read<BookingBloc>().add(
-                  UpdateGuests(state.adults, state.children, v),
-                );
-              }),
+              _counter(
+                "Adults",
+                state.adults,
+                (v) {
+                  context.read<BookingBloc>().add(
+                    UpdateGuests(v, state.children, state.rooms),
+                  );
+                },
+                min: 1,
+                max: roomSelected
+                    ? state.selectedRoomType!.maxAdults * state.rooms
+                    : 1,
+                enabled: roomSelected,
+              ),
+
+              _counter(
+                "Children",
+                state.children,
+                (v) {
+                  context.read<BookingBloc>().add(
+                    UpdateGuests(state.adults, v, state.rooms),
+                  );
+                },
+                min: 0,
+                max: roomSelected
+                    ? state.selectedRoomType!.maxChildren * state.rooms
+                    : 0,
+                enabled: roomSelected,
+              ),
+
+              _counter(
+                "Rooms",
+                state.rooms,
+                (v) {
+                  context.read<BookingBloc>().add(
+                    UpdateGuests(state.adults, state.children, v),
+                  );
+                },
+                min: 1,
+                enabled: roomSelected,
+              ),
             ],
           ),
 
@@ -200,7 +327,7 @@ Widget _bookingCard(BuildContext context, BookingState state) {
                   context.read<BookingBloc>().add(CheckAvailability()),
               child: const Text(
                 "Check Availability",
-                style: TextStyle(fontSize: 16),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
               ),
             ),
           ),
@@ -239,7 +366,6 @@ Widget _infoCard() {
   );
 }
 
-
 Widget _dropdown({
   required String label,
   required String? value,
@@ -258,16 +384,84 @@ Widget _dropdown({
   );
 }
 
-Widget _counter(String label, int value, ValueChanged<int> onChanged) {
+// Widget _counter(String label, int value, ValueChanged<int> onChanged) {
+//   return Expanded(
+//     child: Column(
+//       children: [
+//         Text(label),
+//         TextFormField(
+//           initialValue: value.toString(),
+//           keyboardType: TextInputType.number,
+//           onChanged: (v) =>
+//               onChanged(int.tryParse(v) ?? value),
+//         ),
+//       ],
+//     ),
+//   );
+// }
+
+Widget _counter(
+  String label,
+  int value,
+  ValueChanged<int> onChanged, {
+  int min = 0,
+  int? max,
+  bool enabled = true, // ✅ NEW
+}) {
   return Expanded(
     child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label),
-        TextFormField(
-          initialValue: value.toString(),
-          keyboardType: TextInputType.number,
-          onChanged: (v) =>
-              onChanged(int.tryParse(v) ?? value),
+        Text(
+          label,
+          style: TextStyle(
+            fontWeight: FontWeight.w500,
+            color: enabled ? Colors.black : Colors.grey,
+          ),
+        ),
+        const SizedBox(height: 6),
+        Container(
+          height: 45,
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: enabled ? Colors.grey.shade300 : Colors.grey.shade200,
+            ),
+            borderRadius: BorderRadius.circular(8),
+            color: enabled ? Colors.white : Colors.grey.shade100,
+          ),
+          child: Row(
+            children: [
+              /// MINUS BUTTON
+              IconButton(
+                icon: const Icon(Icons.remove),
+                onPressed: enabled && value > min
+                    ? () => onChanged(value - 1)
+                    : null,
+              ),
+
+              /// VALUE
+              Expanded(
+                child: Center(
+                  child: Text(
+                    value.toString(),
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: enabled ? Colors.black : Colors.grey,
+                    ),
+                  ),
+                ),
+              ),
+
+              /// PLUS BUTTON
+              IconButton(
+                icon: const Icon(Icons.add),
+                onPressed: enabled && (max == null || value < max)
+                    ? () => onChanged(value + 1)
+                    : null,
+              ),
+            ],
+          ),
         ),
       ],
     ),
@@ -275,11 +469,12 @@ Widget _counter(String label, int value, ValueChanged<int> onChanged) {
 }
 
 Widget _dateField(
-    BuildContext context, {
-      required String label,
-      required DateTime? date,
-      required ValueChanged<DateTime> onSelect,
-    }) {
+  BuildContext context, {
+  required String label,
+  required DateTime date,
+  required DateTime firstDate,
+  required ValueChanged<DateTime> onSelect,
+}) {
   return TextFormField(
     readOnly: true,
     decoration: InputDecoration(
@@ -287,16 +482,29 @@ Widget _dateField(
       suffixIcon: const Icon(Icons.calendar_today),
     ),
     controller: TextEditingController(
-      text: date == null ? "" : date.toString().split(" ")[0],
+      text:
+          "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
     ),
     onTap: () async {
       final picked = await showDatePicker(
         context: context,
-        firstDate: DateTime.now(),
-        lastDate: DateTime.now().add(const Duration(days: 365)),
+        initialDate: date,
+        firstDate: firstDate,
+        lastDate: _today().add(const Duration(days: 365)),
       );
-      if (picked != null) onSelect(picked);
+
+      if (picked != null) {
+        onSelect(picked);
+      }
     },
   );
 }
 
+DateTime _today() {
+  final now = DateTime.now();
+  return DateTime(now.year, now.month, now.day);
+}
+
+DateTime _tomorrow() {
+  return _today().add(const Duration(days: 1));
+}

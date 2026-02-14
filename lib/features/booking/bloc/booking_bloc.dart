@@ -53,11 +53,22 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
   }
 
   void _selectRoomType(
-      SelectRoomType event, Emitter<BookingState> emit) {
+      SelectRoomType event,
+      Emitter<BookingState> emit,
+      ) {
     final rt =
     state.roomTypes.firstWhere((r) => r.id == event.roomTypeId);
-    emit(state.copyWith(selectedRoomType: rt));
+
+    emit(state.copyWith(
+      selectedRoomType: rt,
+
+      // ✅ Reset counters
+      adults: 1,
+      children: 0,
+      rooms: 1,
+    ));
   }
+
 
   void _updateDates(UpdateDates event, Emitter<BookingState> emit) {
     emit(state.copyWith(
@@ -67,12 +78,28 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
   }
 
   void _updateGuests(UpdateGuests event, Emitter<BookingState> emit) {
+    int adults = event.adults;
+    int children = event.children;
+    int rooms = event.rooms;
+
+    if (state.selectedRoomType != null) {
+      final maxAdults =
+          state.selectedRoomType!.maxAdults * rooms;
+
+      final maxChildren =
+          state.selectedRoomType!.maxChildren * rooms;
+
+      if (adults > maxAdults) adults = maxAdults;
+      if (children > maxChildren) children = maxChildren;
+    }
+
     emit(state.copyWith(
-      adults: event.adults,
-      children: event.children,
-      rooms: event.rooms,
+      adults: adults,
+      children: children,
+      rooms: rooms,
     ));
   }
+
 
   Future<void> _checkAvailability(
       CheckAvailability event, Emitter<BookingState> emit) async {
