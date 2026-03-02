@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../bloc/home_bloc.dart';
 import '../bloc/home_event.dart';
@@ -12,14 +13,55 @@ import '../widgets/brands_section.dart';
 import '../widgets/events_section.dart';
 import '../widgets/footer.dart';
 import 'package:bhrhotel/core/widgets/app_drawer.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
+
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+      lowerBound: 0.7,
+      upperBound: 1.0,
+    )..repeat(reverse: true);
+  }
+
+  Future<void> openWhatsApp() async {
+
+    String phoneNumber = "919211283334";
+    String message = "Hello! Get instant booking support from our hotel team!";
+
+    final url = Uri.parse(
+        "https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}");
+
+    await launchUrl(url, mode: LaunchMode.externalApplication);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
+
         if (state.loading) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
@@ -56,44 +98,80 @@ class HomePage extends StatelessWidget {
             ),
             centerTitle: true,
           ),
-          body: ListView.builder(
-            itemCount: 5,
-            itemBuilder: (context, index) {
-              switch (index) {
-                // case 0:
-                //   return HeaderBar(
-                //   scrolled: true,
-                //   onBook: () {
-                //     BookingModal.open(context);
-                //   },
-                // );
-                case 0:
-                  return HeroSlider(images: home.heroImages);
 
-                case 1:
-                  return BrandBannerWidget(
-                    banner: home.brandBanner,
-                  );
+          body: Stack(
+            children: [
 
-                case 2:
-                  return BrandsSection(
-                    section: home.brandSection,
-                  );
+              /// Main Content
+              ListView.builder(
+                itemCount: 5,
+                itemBuilder: (context, index) {
 
-                case 3:
-                  return EventsSection(
-                    section: home.eventsSection,
-                  );
+                  switch (index) {
 
-                case 4:
-                  return FooterWidget(
-                    contact: home.contact,
-                  );
+                    case 0:
+                      return HeroSlider(images: home.heroImages);
 
-                default:
-                  return const SizedBox();
-              }
-            },
+                    case 1:
+                      return BrandBannerWidget(
+                        banner: home.brandBanner,
+                        contact: home.contact,
+                      );
+
+                    case 2:
+                      return BrandsSection(
+                        section: home.brandSection,
+                      );
+
+                    case 3:
+                      return EventsSection(
+                        section: home.eventsSection,
+                      );
+
+                    case 4:
+                      return FooterWidget(
+                        contact: home.contact,
+                      );
+
+                    default:
+                      return const SizedBox();
+                  }
+                },
+              ),
+
+              /// WhatsApp Blinking Button
+              Positioned(
+                bottom: 20,
+                right: 20,
+                child: ScaleTransition(
+                  scale: _controller,
+                  child: GestureDetector(
+                    onTap: openWhatsApp,
+                    child: Container(
+                      width: 65,
+                      height: 65,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFF25D366),
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            blurRadius: 10,
+                            color: Colors.black26,
+                            offset: Offset(0,4),
+                          )
+                        ],
+                      ),
+                      child: const Icon(
+                        FontAwesomeIcons.whatsapp,
+                        color: Colors.white,
+                        size: 34,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+            ],
           ),
         );
       },

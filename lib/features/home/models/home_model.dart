@@ -176,13 +176,21 @@ class ContactSection {
   final String? companyName;
   final String? email;
   final String? reservationPhone;
+  final String? travelWeddingPhone;
+  final String? corporateTieupPhone;
+  final String? hotelRegistrationPhone;
   final String? corporateAddress;
+  final SocialLinks socialLinks;
 
   ContactSection({
     this.companyName,
     this.email,
     this.reservationPhone,
+    this.travelWeddingPhone,
+    this.corporateTieupPhone,
+    this.hotelRegistrationPhone,
     this.corporateAddress,
+    required this.socialLinks,
   });
 
   factory ContactSection.fromJson(Map<String, dynamic> json) {
@@ -190,7 +198,39 @@ class ContactSection {
       companyName: json['companyName'],
       email: json['email'],
       reservationPhone: json['reservationPhone'],
+      travelWeddingPhone: json['travelWeddingPhone'],
+      corporateTieupPhone: json['corporateTieupPhone'],
+      hotelRegistrationPhone: json['hotelRegistrationPhone'],
       corporateAddress: json['corporateAddress'],
+      socialLinks:
+      SocialLinks.fromJson(
+          json['socialLinks'] ?? {}),
+    );
+  }
+}
+
+class SocialLinks {
+  final String? facebook;
+  final String? instagram;
+  final String? youtube;
+  final String? twitterX;
+  final String? linkedIn;
+
+  SocialLinks({
+    this.facebook,
+    this.instagram,
+    this.youtube,
+    this.twitterX,
+    this.linkedIn,
+  });
+
+  factory SocialLinks.fromJson(Map<String, dynamic> json) {
+    return SocialLinks(
+      facebook: json['facebook'],
+      instagram: json['instagram'],
+      youtube: json['youtube'],
+      twitterX: json['twitterX'],
+      linkedIn: json['linkedIn'],
     );
   }
 }

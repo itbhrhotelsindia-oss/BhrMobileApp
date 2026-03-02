@@ -36,7 +36,19 @@ class ContactPage extends StatelessWidget {
                         items: [
                           _ContactItem(
                             icon: FontAwesomeIcons.phone,
-                            text: "+91 9211283334",
+                            text: "Reservations: +91 7900008944",
+                          ),
+                          _ContactItem(
+                            icon: FontAwesomeIcons.phone,
+                            text: "Travel Partner / Wedding: +91 9211283334",
+                          ),
+                          _ContactItem(
+                            icon: FontAwesomeIcons.phone,
+                            text: "Corporate Tie-Ups: +91 9211283334",
+                          ),
+                          _ContactItem(
+                            icon: FontAwesomeIcons.phone,
+                            text: "Hotel Registration: +91 9211283335",
                           ),
                           _ContactItem(
                             icon: FontAwesomeIcons.clock,
@@ -51,6 +63,10 @@ class ContactPage extends StatelessWidget {
                           _ContactItem(
                             icon: FontAwesomeIcons.envelope,
                             text: "info@bhrhotelsindia.com",
+                          ),
+                          _ContactItem(
+                            icon: FontAwesomeIcons.envelope,
+                            text: "info@hotaality.com",
                           ),
                           _ContactItem(
                             icon: FontAwesomeIcons.globe,

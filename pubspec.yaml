@@ -73,7 +73,7 @@ flutter:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/hotel-logo.jpeg"
+  image_path: "assets/logo.jpeg"
 
 
   # To add assets to your application, add an assets section, like this:
